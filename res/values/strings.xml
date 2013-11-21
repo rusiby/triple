@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Triple</string>
+    <string name="create">新建游戏</string>
+    <string name="join">加入游戏</string>
+    <string name="start">开始</string>
+    <string name="host">加入主机</string>
+    <string name="creating">正在创建&#8230;</string>
+    <string name="connecting">正在加入&#8230;</string>
+
+</resources>
