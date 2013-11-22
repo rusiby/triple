@@ -3,6 +3,7 @@ package com.urd.triple;
 import java.util.Collection;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,12 +48,21 @@ public class PlayerListActivity extends ListActivity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch (item.getItemId()) {
         case R.id.start:
+            if (isAllReady()) {
+                Intent intent = new Intent();
+                GameActivity.launch(this, intent);
+            }
             break;
 
         default:
             return super.onMenuItemSelected(featureId, item);
         }
 
+        return true;
+    }
+
+    private boolean isAllReady() {
+        // TODO 是否满足开桌条件
         return true;
     }
 

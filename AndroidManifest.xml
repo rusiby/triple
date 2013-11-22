@@ -35,6 +35,11 @@
             android:name="com.urd.triple.PlayerListActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.DeviceDefault.Light" />
+        <activity
+            android:name="com.urd.triple.GameActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>
