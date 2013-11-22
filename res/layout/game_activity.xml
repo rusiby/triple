@@ -5,10 +5,187 @@
 
     <RelativeLayout
         android:id="@+id/self_contanier"
+        android:layout_width="@dimen/self_contanier_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <RelativeLayout
+            android:id="@+id/contanier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/identity"
+                android:layout_width="@dimen/avator_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/tv_tb_padding"
+                android:text="奸臣" />
+
+            <ImageView
+                android:id="@+id/avator"
+                android:layout_width="@dimen/avator_width"
+                android:layout_height="@dimen/avator_height"
+                android:layout_below="@id/identity"
+                android:src="@drawable/ic_launcher" />
+
+            <LinearLayout
+                android:id="@+id/skill_container"
+                android:layout_width="@dimen/avator_width"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/avator"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/skill_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/tv_tb_padding"
+                    android:text="激将" />
+
+                <TextView
+                    android:id="@+id/skill_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/tv_tb_padding"
+                    android:text="仁慈" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/skill_container"
+                android:layout_toRightOf="@id/identity" >
+
+                <ListView
+                    android:id="@+id/equipment_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                </ListView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/blood_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contanier"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/blood"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="5" />
+
+            <Button
+                android:id="@+id/blood_increase"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center"
+                android:padding="@dimen/tv_tb_padding"
+                android:text="+" />
+
+            <Button
+                android:id="@+id/blood_decrease"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center"
+                android:padding="@dimen/tv_tb_padding"
+                android:text="-" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/judge_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/blood_container"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/thunder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="闪电" />
+
+            <TextView
+                android:id="@+id/prison "
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="乐不思蜀" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:background="#ff0000" >
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/self_contanier"
+        android:layout_toRightOf="@id/self_contanier" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/controll_area"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/get_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="摸牌" />
+
+            <Button
+                android:id="@+id/clear "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="清台" />
+
+            <Button
+                android:id="@+id/undo_clear "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="撤销清台" />
+            \  
+
+            <Button
+                android:id="@+id/to_desk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="摸牌到桌" />
+
+            <Button
+                android:id="@+id/show_indentity "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="亮身份" />
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

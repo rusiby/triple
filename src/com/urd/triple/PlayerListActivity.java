@@ -20,7 +20,6 @@ public class PlayerListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAdapter = new PlayerListAdapter();
         setListAdapter(mAdapter);
 
