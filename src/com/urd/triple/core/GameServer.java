@@ -15,10 +15,15 @@ import android.os.Handler;
 
 import com.urd.triple.core.GameSocket.GameSocketListener;
 import com.urd.triple.core.commands.Command;
+import com.urd.triple.core.commands.HeroListNotify;
 import com.urd.triple.core.commands.LoginNotify;
 import com.urd.triple.core.commands.LoginReq;
 import com.urd.triple.core.commands.LoginResp;
 import com.urd.triple.core.commands.LogoutNotify;
+import com.urd.triple.core.commands.SelectHeroNotify;
+import com.urd.triple.core.commands.StartGameNotify;
+import com.urd.triple.core.commands.StartGameReq;
+import com.urd.triple.core.commands.StartGameResp;
 
 public class GameServer implements GameSocketListener {
     private static final Logger LOG = LoggerFactory.getLogger(GameServer.class);
@@ -28,6 +33,7 @@ public class GameServer implements GameSocketListener {
     private final BluetoothAdapter mBluetoothAdapter;
     private List<GameSocket> mClients;
     private PlayerMananger mPlayerMananger;
+    private boolean mPlaying;
     private AcceptThread mAcceptThread;
 
     public GameServer(UUID uuid) {
@@ -38,6 +44,7 @@ public class GameServer implements GameSocketListener {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mClients = new ArrayList<GameSocket>();
         mPlayerMananger = new PlayerMananger();
+        mPlaying = false;
     }
 
     public void start() {
@@ -81,6 +88,7 @@ public class GameServer implements GameSocketListener {
     public void onSocketConnect(GameSocket socket) {
     }
 
+    // TODO: 命令状态认证
     @Override
     public void onSocketCommand(GameSocket socket, Command command) {
         LOG.debug("recv command. from={} command={}", socket.getName(), command);
@@ -95,15 +103,26 @@ public class GameServer implements GameSocketListener {
                 sendTo(new LoginResp(0, mPlayerMananger.getPlayers()), player);
                 broadcastExcept(new LoginNotify(player), player);
             } else {
-                LOG.warn("invalid command. close socket.");
+                LOG.warn("invalid command. close socket. command={}", command);
 
                 socket.close();
             }
             break;
 
+        case StartGameReq.ID:
+            if (!mPlaying) {
+                onStartGameReq(mPlayerMananger.get(socket));
+            } else {
+                LOG.warn("invalid command. command={}", command);
+            }
+            break;
+
+        case SelectHeroNotify.ID:
+            onSelectHeroNotify(mPlayerMananger.get(socket), (SelectHeroNotify) command);
+            break;
+
         default:
-            command.src = id;
-            broadcast(command);
+            LOG.warn("invalid command. command={}", command);
             break;
         }
     }
@@ -118,6 +137,58 @@ public class GameServer implements GameSocketListener {
             broadcast(new LogoutNotify(socket.getID()));
         }
         socket.close();
+    }
+
+    private void onStartGameReq(Player player) {
+        int playerCount = mPlayerMananger.size();
+
+        LOG.info("request start game. players.count={}", playerCount);
+
+        if (playerCount >= GameConstants.MIN_PLAYER_COUNT) {
+            LOG.info("game start.");
+
+            String lordID = null;
+            Role.Generator generator = new Role.Generator(playerCount);
+            List<Player> players = mPlayerMananger.getPlayers();
+            for (Player p : players) {
+                p.role = generator.generate();
+                if (p.role == Role.LORD) {
+                    lordID = p.id;
+                }
+            }
+            for (Player p : players) {
+                sendTo(new StartGameNotify(p.role, lordID), p);
+
+                Hero.Generator heroGenerator = new Hero.Generator();
+                if (p.role == Role.LORD) {
+                    sendTo(new HeroListNotify(heroGenerator.generate(5)), player);
+                }
+            }
+
+            mPlaying = true;
+        } else {
+            LOG.warn("invalid player count.");
+
+            sendTo(new StartGameResp(StartGameResp.ERROR_INVALID_PLAYER_COUNT), player);
+        }
+    }
+
+    private void onSelectHeroNotify(Player player, SelectHeroNotify notify) {
+        LOG.info("{} select hero {}.", player.name, notify.hero);
+
+        player.hero = notify.hero;
+
+        notify.src = player.id;
+        broadcast(notify);
+
+        if (player.isLord()) {
+            Hero.Generator generator = new Hero.Generator(player.hero);
+            for (Player p : mPlayerMananger.getPlayers()) {
+                if (p != player) {
+                    sendTo(new HeroListNotify(generator.generate(3)), p);
+                }
+            }
+        }
     }
 
     private void sendTo(Command command, Player player) {

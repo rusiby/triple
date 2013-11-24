@@ -30,5 +30,12 @@ public class CommandFactory {
         COMMAND_MAP.append(LoginResp.ID, LoginResp.class);
         COMMAND_MAP.append(LoginNotify.ID, LoginNotify.class);
         COMMAND_MAP.append(LogoutNotify.ID, LogoutNotify.class);
+        COMMAND_MAP.append(StartGameReq.ID, StartGameReq.class);
+        COMMAND_MAP.append(StartGameResp.ID, StartGameResp.class);
+        COMMAND_MAP.append(StartGameNotify.ID, StartGameNotify.class);
+        COMMAND_MAP.append(HeroListNotify.ID, HeroListNotify.class);
+        COMMAND_MAP.append(SelectHeroNotify.ID, SelectHeroNotify.class);
+        COMMAND_MAP.append(CardActionReq.ID, CardActionReq.class);
+        COMMAND_MAP.append(CardActionNotify.ID, CardActionNotify.class);
     }
 }

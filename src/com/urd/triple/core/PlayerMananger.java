@@ -84,4 +84,8 @@ public class PlayerMananger {
     public List<Player> getPlayers() {
         return mPlayers;
     }
+
+    public int size() {
+        return mPlayers.size();
+    }
 }
