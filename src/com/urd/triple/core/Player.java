@@ -15,6 +15,9 @@ public class Player {
     public List<Card> handCards;// 手牌
     public SparseArray<Card> equipments;// 装备区的牌
     public SparseArray<List<Card>> judges;// 判断区的牌
+    public int hp;
+    public List<Integer> heroes;
+    public List<Card> cards;
 
     public transient GameSocket socket;
 
@@ -23,85 +26,17 @@ public class Player {
         this.name = name;
         this.role = Role.UNKNOWN;
         this.hero = Hero.UNKNOWN;
-        handCards = new ArrayList<Card>();
-        equipments = new SparseArray<Card>();
-        judges = new SparseArray<List<Card>>();
+        this.hp = 4;
+        this.heroes = new ArrayList<Integer>();
+        this.cards = new ArrayList<Card>();
     }
 
-    public void addJudgeThunder(Card card) {
-        addJudge(card, Judgement.JUDGE_THUNDER);
-    }
-
-    public void addJudgeHappy(Card card) {
-        addJudge(card, Judgement.JUDGE_HAPPY);
-    }
-
-    public void removeJudgeThunder(Card card) {
-        removeJudge(card, Judgement.JUDGE_THUNDER);
-    }
-
-    public void removeJudgeHappy(Card card) {
-        removeJudge(card, Judgement.JUDGE_HAPPY);
-    }
-
-    public void removeDefentHorse() {
-        equipments.remove(Equipment.DEFENT_HORSE);
-    }
-
-    public void removeShield() {
-        equipments.remove(Equipment.SHIELD);
-    }
-
-    public void removeSword() {
-        equipments.remove(Equipment.SWORD);
-    }
-
-    public void removeAttackHorse() {
-        equipments.remove(Equipment.ATTACK_HORSE);
-    }
-
-    public void equipDefentHorse(Card card) {
-        equipments.put(Equipment.DEFENT_HORSE, card);
-    }
-
-    public void equipShield(Card card) {
-        equipments.put(Equipment.SHIELD, card);
-    }
-
-    public void equipSword(Card card) {
-        equipments.put(Equipment.SWORD, card);
-    }
-
-    public void equipAttackHorse(Card card) {
-        equipments.put(Equipment.ATTACK_HORSE, card);
+    public Card getCard(int card) {
+        return Card.find(cards, card);
     }
 
     public boolean isLord() {
         return this.role == Role.LORD;
-    }
-
-    public void addCard(Card card) {
-        handCards.add(card);
-    }
-
-    public void removeCard(Card card) {
-        handCards.remove(card);
-    }
-
-    private void addJudge(Card card, int type) {
-        List<Card> list = judges.get(type);
-        if (list == null) {
-            list = new ArrayList<Card>();
-        }
-        list.add(card);
-        judges.put(type, list);
-    }
-
-    private void removeJudge(Card card, int type) {
-        List<Card> list = judges.get(type);
-        if (list != null) {
-            list.remove(card);
-        }
     }
 
     @Override

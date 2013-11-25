@@ -1,11 +1,9 @@
 package com.urd.triple.core;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Card {
+public class Card implements Comparable<Card> {
 
     public static final int UNKNOWN = 0;
 
@@ -16,54 +14,26 @@ public class Card {
     public static final int AREA_JUDGE = 3; // 判定区
     public static final int AREA_HAND = 4; // 手牌
 
-    public static class Generator {
-
-        private static final int COUNT = 108;
-        private static final int LOW_WATER_MARK = 10;
-
-        private LinkedList<Card> mUnusedCards;
-        private LinkedList<Card> mUsedCards;
-
-        public Generator() {
-            mUnusedCards = new LinkedList<Card>();
-            mUsedCards = new LinkedList<Card>();
-
-            // TODO: 分配正确的ID
-            for (int i = 0; i < COUNT; i++) {
-                mUnusedCards.add(new Card(i + 1));
-            }
-            Collections.shuffle(mUnusedCards);
-        }
-
-        public Card pull() {
-            return pull(1).get(0);
-        }
-
-        public List<Card> pull(int count) {
-            List<Card> cards = new ArrayList<Card>(count);
-            for (int i = 0; i < count; i++) {
-                cards.add(mUnusedCards.poll());
-            }
-
-            if (mUnusedCards.size() < LOW_WATER_MARK) {
-                Collections.shuffle(mUsedCards);
-                for (Card card : mUsedCards) {
-                    card.area = AREA_DECK;
-                }
-                mUnusedCards.addAll(mUsedCards);
-                mUsedCards.clear();
-            }
-
-            return cards;
-        }
-
-        public void push(List<Card> cards) {
-            mUsedCards.addAll(cards);
-        }
-    }
+    public static final int AREA_DECK_TOP = 5; // 牌堆顶
+    public static final int AREA_DECK_BOTTOM = 6; // 牌堆底
 
     public int id;
     public int area;
+
+    public static Card find(List<Card> cards, int card) {
+        int index = Collections.binarySearch(cards, new Card(card));
+
+        return index >= 0 ? cards.get(index) : null;
+    }
+
+    public static Card remove(List<Card> cards, int card) {
+        Card result = find(cards, card);
+        if (result != null) {
+            cards.remove(result);
+        }
+
+        return result;
+    }
 
     public Card(int id) {
         this.id = id;
@@ -73,5 +43,10 @@ public class Card {
     public Card(int id, int area) {
         this.id = id;
         this.area = area;
+    }
+
+    @Override
+    public int compareTo(Card another) {
+        return Integer.valueOf(id).compareTo(another.id);
     }
 }

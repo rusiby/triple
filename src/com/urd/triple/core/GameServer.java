@@ -14,6 +14,11 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 
 import com.urd.triple.core.GameSocket.GameSocketListener;
+import com.urd.triple.core.commands.CardActionNotify;
+import com.urd.triple.core.commands.CardActionReq;
+import com.urd.triple.core.commands.ChangeHPNotify;
+import com.urd.triple.core.commands.CleanDeskNotify;
+import com.urd.triple.core.commands.CleanDeskReq;
 import com.urd.triple.core.commands.Command;
 import com.urd.triple.core.commands.HeroListNotify;
 import com.urd.triple.core.commands.LoginNotify;
@@ -32,9 +37,12 @@ public class GameServer implements GameSocketListener {
     private final Handler mHandler;
     private final BluetoothAdapter mBluetoothAdapter;
     private List<GameSocket> mClients;
+    private AcceptThread mAcceptThread;
+
     private PlayerMananger mPlayerMananger;
     private boolean mPlaying;
-    private AcceptThread mAcceptThread;
+    private Deck mDeck;
+    private GameProxy mGameProxy;
 
     public GameServer(UUID uuid) {
         LOG.debug("construction. UUID={}", uuid);
@@ -93,10 +101,10 @@ public class GameServer implements GameSocketListener {
     public void onSocketCommand(GameSocket socket, Command command) {
         LOG.debug("recv command. from={} command={}", socket.getName(), command);
 
-        String id = socket.getID();
+        command.src = socket.getID();
         switch (command.getID()) {
         case LoginReq.ID:
-            if (!(mPlayerMananger.contains(id))) {
+            if (!(mPlayerMananger.contains(socket))) {
                 Player player = mPlayerMananger.add(socket, ((LoginReq) command).name);
                 LOG.info("playe login. player={}", player);
 
@@ -119,6 +127,18 @@ public class GameServer implements GameSocketListener {
 
         case SelectHeroNotify.ID:
             onSelectHeroNotify(mPlayerMananger.get(socket), (SelectHeroNotify) command);
+            break;
+
+        case CardActionReq.ID:
+            onCardActionReq(mPlayerMananger.get(socket), (CardActionReq) command);
+            break;
+
+        case CleanDeskReq.ID:
+            onCleanDeskReq(mPlayerMananger.get(socket));
+            break;
+
+        case ChangeHPNotify.ID:
+            onChangeHPNotify(mPlayerMananger.get(socket), (ChangeHPNotify) command);
             break;
 
         default:
@@ -165,6 +185,8 @@ public class GameServer implements GameSocketListener {
                 }
             }
 
+            mDeck = new Deck();
+            mGameProxy = new GameProxy(mPlayerMananger);
             mPlaying = true;
         } else {
             LOG.warn("invalid player count.");
@@ -176,9 +198,6 @@ public class GameServer implements GameSocketListener {
     private void onSelectHeroNotify(Player player, SelectHeroNotify notify) {
         LOG.info("{} select hero {}.", player.name, notify.hero);
 
-        player.hero = notify.hero;
-
-        notify.src = player.id;
         broadcast(notify);
 
         if (player.isLord()) {
@@ -191,14 +210,55 @@ public class GameServer implements GameSocketListener {
         }
     }
 
+    private void onCardActionReq(Player player, CardActionReq req) {
+        LOG.info("card action req. req={}", req);
+
+        CardActionNotify notify = new CardActionNotify(req);
+        if (req.srcArea == Card.AREA_DECK) {
+            Card card = mDeck.pull();
+            notify.card = card.id;
+        }
+        if (req.dstArea == Card.AREA_DECK_TOP || req.dstArea == Card.AREA_DECK_BOTTOM) {
+            mDeck.add(new Card(req.card), notify.dstArea);
+
+            notify.dstArea = Card.AREA_DECK;
+        }
+
+        broadcast(notify);
+    }
+
+    private void onCleanDeskReq(Player player) {
+        LOG.info("clean desk req.");
+
+        mDeck.push(mGameProxy.getDeskCards());
+
+        broadcast(new CleanDeskNotify());
+    }
+
+    private void onChangeHPNotify(Player player, ChangeHPNotify notify) {
+        LOG.info("change hp notify.");
+
+        broadcast(notify);
+    }
+
     private void sendTo(Command command, Player player) {
         LOG.debug("send command to {}. command={}", player.name, command);
+
+        command.dst = player.id;
+
+        if (mGameProxy != null) {
+            mGameProxy.execute(command);
+        }
 
         player.socket.send(command);
     }
 
     private void broadcast(Command command) {
         LOG.debug("broadcast command. command={}", command);
+
+        if (mGameProxy != null) {
+            mGameProxy.execute(command);
+        }
 
         for (Player p : mPlayerMananger.getPlayers()) {
             p.socket.send(command);
@@ -207,6 +267,10 @@ public class GameServer implements GameSocketListener {
 
     private void broadcastExcept(Command command, Player player) {
         LOG.debug("broadcast command except {}. command={}", player.name, command);
+
+        if (mGameProxy != null) {
+            mGameProxy.execute(command);
+        }
 
         for (Player p : mPlayerMananger.getPlayers()) {
             if (p != player) {

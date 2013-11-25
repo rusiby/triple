@@ -7,6 +7,10 @@ public class CardActionReq extends Command {
     public int srcArea;
     public int dstArea;
 
-    public CardActionReq() {
+    public CardActionReq(int card, int srcArea, int dstArea, String dst) {
+        this.card = card;
+        this.srcArea = srcArea;
+        this.dstArea = dstArea;
+        this.dst = dst;
     }
 }

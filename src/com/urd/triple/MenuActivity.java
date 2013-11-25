@@ -168,11 +168,36 @@ public class MenuActivity extends BaseActivity {
         }
 
         @Override
+        public void onGameStart(int role) {
+        }
+
+        @Override
+        public void onHeroList(List<Integer> heroes) {
+        }
+
+        @Override
+        public void onPlayerSelectHero(Player player, int hero) {
+        }
+
+        @Override
+        public void onCardAction(int card, int srcArea, int dstArea, Player src, Player dst) {
+        }
+
+        @Override
+        public void onDeskClean() {
+        }
+
+        @Override
+        public void onPlayerHPChange(Player player) {
+        }
+
+        @Override
         public void onNetworkError() {
             showToast("网络错误.");
 
             mProgressDialog.hide();
             mMenuDialog.show();
         }
+
     };
 }

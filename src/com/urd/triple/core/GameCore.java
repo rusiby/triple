@@ -2,6 +2,7 @@ package com.urd.triple.core;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,11 +13,20 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 import com.urd.triple.core.GameSocket.GameSocketListener;
+import com.urd.triple.core.commands.CardActionNotify;
+import com.urd.triple.core.commands.CardActionReq;
+import com.urd.triple.core.commands.ChangeHPNotify;
+import com.urd.triple.core.commands.CleanDeskNotify;
+import com.urd.triple.core.commands.CleanDeskReq;
 import com.urd.triple.core.commands.Command;
+import com.urd.triple.core.commands.HeroListNotify;
 import com.urd.triple.core.commands.LoginNotify;
 import com.urd.triple.core.commands.LoginReq;
 import com.urd.triple.core.commands.LoginResp;
 import com.urd.triple.core.commands.LogoutNotify;
+import com.urd.triple.core.commands.SelectHeroNotify;
+import com.urd.triple.core.commands.StartGameNotify;
+import com.urd.triple.core.commands.StartGameReq;
 
 public class GameCore {
     private static final Logger LOG = LoggerFactory.getLogger(GameCore.class);
@@ -25,6 +35,7 @@ public class GameCore {
 
     private Player mSelf;
     private PlayerMananger mPlayerMananger;
+    private GameProxy mGameProxy;
     private GameServer mServer;
     private GameSocket mClient;
     private Set<GameListener> mListeners;
@@ -38,6 +49,18 @@ public class GameCore {
         void onPlayerLogin(Player player);
 
         void onPlayerLogout(Player player);
+
+        void onGameStart(int role);
+
+        void onHeroList(List<Integer> heroes);
+
+        void onPlayerSelectHero(Player player, int hero);
+
+        void onCardAction(int card, int srcArea, int dstArea, Player src, Player dst);
+
+        void onDeskClean();
+
+        void onPlayerHPChange(Player player);
 
         void onNetworkError();
     }
@@ -86,6 +109,38 @@ public class GameCore {
         mClient = socket;
     }
 
+    public void startGame() {
+        LOG.info("start game.");
+
+        if (mPlayerMananger.size() >= GameConstants.MIN_PLAYER_COUNT) {
+            mClient.send(new StartGameReq());
+        }
+    }
+
+    public void selectHero(int hero) {
+        LOG.info("select hero {}.", hero);
+
+        mClient.send(new SelectHeroNotify(hero));
+    }
+
+    public void doCardAction(int card, int srcArea, int dstArea, Player target) {
+        CardActionReq req = new CardActionReq(card, srcArea, dstArea, target.id);
+        LOG.info("do card aciton. req={}", req);
+        mClient.send(req);
+    }
+
+    public void cleanDesk() {
+        LOG.info("clean desk.");
+
+        mClient.send(new CleanDeskReq());
+    }
+
+    public void changeHP(int hp) {
+        LOG.info("change hp. {} => {}", mSelf.hp, hp);
+
+        mClient.send(new ChangeHPNotify(hp));
+    }
+
     public void registerListener(GameListener listener) {
         mListeners.add(listener);
     }
@@ -106,6 +161,8 @@ public class GameCore {
 
             mServer = null;
         }
+        mGameProxy.clear();
+        mGameProxy = null;
         mPlayerMananger.clear();
     }
 
@@ -178,6 +235,71 @@ public class GameCore {
         }
     }
 
+    private void onStartGameNotify(StartGameNotify notify) {
+        LOG.info("game start. role={}", notify.role);
+
+        mGameProxy = new GameProxy(mPlayerMananger);
+
+        mGameProxy.execute(notify);
+
+        for (GameListener l : mListeners) {
+            l.onGameStart(notify.role);
+        }
+    }
+
+    private void onHeroListNotify(HeroListNotify notify) {
+        LOG.info("hero list notify. heroes={}", notify.heroes);
+
+        for (GameListener l : mListeners) {
+            l.onHeroList(notify.heroes);
+        }
+    }
+
+    private void onSelectHeroNotify(SelectHeroNotify notify) {
+        Player player = mPlayerMananger.get(notify.src);
+
+        LOG.info("select hero. player={} hero={}", player.name, notify.hero);
+
+        if (player != mSelf) {
+            for (GameListener l : mListeners) {
+                l.onPlayerSelectHero(player, notify.hero);
+            }
+        }
+    }
+
+    private void onCardActionNotify(CardActionNotify notify) {
+        Player src = mPlayerMananger.get(notify.src);
+        Player dst = null;
+        if (notify.dst != null) {
+            dst = mPlayerMananger.get(notify.dst);
+        }
+
+        LOG.info("card action. action={}", notify);
+
+        for (GameListener l : mListeners) {
+            l.onCardAction(notify.card, notify.srcArea, notify.dstArea, src, dst);
+        }
+    }
+
+    private void onCleanDeskNotify() {
+        LOG.info("desk clean.");
+
+        for (GameListener l : mListeners) {
+            l.onDeskClean();
+        }
+    }
+
+    private void onChangeHPNotify(ChangeHPNotify notify) {
+        Player player = mPlayerMananger.get(notify.src);
+        LOG.info("hp changed. player={} hp={}", player.name, player.hp);
+
+        if (player != mSelf) {
+            for (GameListener l : mListeners) {
+                l.onPlayerHPChange(player);
+            }
+        }
+    }
+
     private final GameSocketListener mSocketListener = new GameSocketListener() {
 
         @Override
@@ -190,6 +312,10 @@ public class GameCore {
         @Override
         public void onSocketCommand(GameSocket socket, Command command) {
             LOG.debug("recv a command. id={}", command.getID());
+
+            if (mGameProxy != null) {
+                mGameProxy.execute(command);
+            }
 
             switch (command.getID()) {
             case LoginResp.ID:
@@ -204,6 +330,30 @@ public class GameCore {
                 onPlayerLogout((LogoutNotify) command);
                 break;
 
+            case StartGameNotify.ID:
+                onStartGameNotify((StartGameNotify) command);
+                break;
+
+            case HeroListNotify.ID:
+                onHeroListNotify((HeroListNotify) command);
+                break;
+
+            case SelectHeroNotify.ID:
+                onSelectHeroNotify((SelectHeroNotify) command);
+                break;
+
+            case CardActionNotify.ID:
+                onCardActionNotify((CardActionNotify) command);
+                break;
+
+            case CleanDeskNotify.ID:
+                onCleanDeskNotify();
+                break;
+
+            case ChangeHPNotify.ID:
+                onChangeHPNotify((ChangeHPNotify) command);
+                break;
+
             default:
                 break;
             }
@@ -211,11 +361,11 @@ public class GameCore {
 
         @Override
         public void onSocketError(GameSocket socket) {
+            close();
+
             for (GameListener l : mListeners) {
                 l.onNetworkError();
             }
-
-            close();
         }
     };
 }

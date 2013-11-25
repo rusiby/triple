@@ -10,9 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.urd.triple.R;
+import com.urd.triple.core.Card;
+import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Player;
 import com.urd.triple.core.Role;
-import com.urd.triple.core.commands.CardActionReq;
 
 public class SelfWidget extends RelativeLayout {
     private Player mPlayer;
@@ -100,8 +101,7 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            // TODO 摸牌处理
-            mPlayer.socket.send(new CardActionReq());
+            GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_HAND, null);
         }
     };
 }

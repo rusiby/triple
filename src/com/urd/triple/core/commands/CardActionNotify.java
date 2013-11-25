@@ -7,6 +7,11 @@ public class CardActionNotify extends Command {
     public int srcArea;
     public int dstArea;
 
-    public CardActionNotify() {
+    public CardActionNotify(CardActionReq req) {
+        src = req.src;
+        dst = req.dst;
+        card = req.card;
+        srcArea = req.srcArea;
+        dstArea = req.dstArea;
     }
 }
