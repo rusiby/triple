@@ -124,10 +124,12 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
+
         }
 
         @Override
         public void onDeskClean() {
+
         }
 
         @Override

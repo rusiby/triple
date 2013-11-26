@@ -35,6 +35,9 @@ public class SelfWidget extends RelativeLayout {
     private Button mGetCard;
     private Button mIncreaseHp;
     private Button mDecreaseHp;
+    private Button mClear;
+    private Button mShowRole;
+    private Button mToDesk;
     private ViewPager mhandCardsArea;
     private ListView mEquipList;
 
@@ -78,6 +81,10 @@ public class SelfWidget extends RelativeLayout {
 
         mJudgeHappy = (TextView) findViewById(R.id.happy);
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
+        mClear = (Button) findViewById(R.id.clear);
+        mClear.setOnClickListener(onClearDeskListener);
+        mShowRole.setOnClickListener(onShowRoleClickListener);
+        mToDesk.setOnClickListener(mGetCardListener);
     }
 
     public void setPlayer(Player self) {
@@ -181,7 +188,7 @@ public class SelfWidget extends RelativeLayout {
             break;
         }
 
-        mRole.setText(roleName);
+        mRole.setText(mPlayer.name + "：" + roleName);
     }
 
     private void updateAvator() {
@@ -215,7 +222,34 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_HAND, null);
+            switch (v.getId()) {
+            case R.id.get_card:
+                GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_HAND, null);
+                break;
+
+            case R.id.to_desk:
+                GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_DESK, null);
+                break;
+
+            default:
+                break;
+            }
+
+        }
+    };
+
+    private OnClickListener onClearDeskListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            GameCore.getInstance().cleanDesk();
+        }
+    };
+    private OnClickListener onShowRoleClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            GameCore.getInstance().showRole();
         }
     };
 
