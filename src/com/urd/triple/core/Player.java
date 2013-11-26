@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import android.util.SparseArray;
-
 public class Player {
 
     public String id;
     public String name;
     public int role;
     public int hero;
-    public List<Card> handCards;// 手牌
-    public SparseArray<Card> equipments;// 装备区的牌
-    public SparseArray<List<Card>> judges;// 判断区的牌
     public int hp;
     public List<Integer> heroes;
     public List<Card> cards;

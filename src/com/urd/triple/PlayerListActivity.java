@@ -50,8 +50,7 @@ public class PlayerListActivity extends ListActivity {
         switch (item.getItemId()) {
         case R.id.start:
             if (isAllReady()) {
-                Intent intent = new Intent();
-                GameActivity.launch(this, intent);
+                GameCore.getInstance().startGame();
             }
             break;
 
@@ -60,6 +59,11 @@ public class PlayerListActivity extends ListActivity {
         }
 
         return true;
+    }
+
+    private void goToGameActivity() {
+        Intent intent = new Intent();
+        GameActivity.launch(this, intent);
     }
 
     private boolean isAllReady() {
@@ -93,6 +97,7 @@ public class PlayerListActivity extends ListActivity {
 
         @Override
         public void onGameStart(int role, Player lord) {
+            goToGameActivity();
         }
 
         @Override
