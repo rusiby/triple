@@ -1,7 +1,10 @@
 package com.urd.triple.core;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import android.util.SparseArray;
 
 public class Card implements Comparable<Card> {
 
@@ -17,8 +20,17 @@ public class Card implements Comparable<Card> {
     public static final int AREA_DECK_TOP = 5; // 牌堆顶
     public static final int AREA_DECK_BOTTOM = 6; // 牌堆底
 
+    public static class Detail {
+
+        public int id;
+        public String name;
+        public String fullname;
+
+    }
+
     public int id;
     public int area;
+    public transient Detail detail;
 
     public static Card find(List<Card> cards, int card) {
         int index = Collections.binarySearch(cards, new Card(card));
@@ -35,18 +47,53 @@ public class Card implements Comparable<Card> {
         return result;
     }
 
+    public static List<Card> getCards() {
+        List<Card> cards = new ArrayList<Card>();
+
+        for (int i = 0; i < DETAIL_MAP.size(); i++) {
+            cards.add(new Card(DETAIL_MAP.valueAt(i)));
+        }
+
+        return cards;
+    }
+
     public Card(int id) {
         this.id = id;
         this.area = AREA_DECK;
+        this.detail = DETAIL_MAP.get(id);
     }
 
     public Card(int id, int area) {
         this.id = id;
         this.area = area;
+        this.detail = DETAIL_MAP.get(id);
+    }
+
+    public Card(Detail detail) {
+        this.id = detail.id;
+        this.area = AREA_DECK;
+        this.detail = detail;
     }
 
     @Override
     public int compareTo(Card another) {
         return Integer.valueOf(id).compareTo(another.id);
+    }
+
+    private static void map(int card, String name) {
+        Detail detail = new Detail();
+        detail.id = card;
+        detail.name = name;
+        // TODO: 名称加入花色及点数
+        detail.fullname = name;
+        DETAIL_MAP.append(card, detail);
+    }
+
+    private static final SparseArray<Detail> DETAIL_MAP;
+
+    static {
+        DETAIL_MAP = new SparseArray<Card.Detail>();
+        // TODO: 普通游戏牌定义（不包括武将等）
+        map(1403005, "桃");
     }
 }

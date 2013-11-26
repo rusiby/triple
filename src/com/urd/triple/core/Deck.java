@@ -7,20 +7,15 @@ import java.util.List;
 
 public class Deck {
 
-    private static final int COUNT = 108;
     private static final int LOW_WATER_MARK = 20;
 
     private LinkedList<Card> mUnusedCards;
     private LinkedList<Card> mUsedCards;
 
     public Deck() {
-        mUnusedCards = new LinkedList<Card>();
+        mUnusedCards = new LinkedList<Card>(Card.getCards());
         mUsedCards = new LinkedList<Card>();
 
-        // TODO: 分配正确的ID
-        for (int i = 0; i < COUNT; i++) {
-            mUnusedCards.add(new Card(i + 1));
-        }
         Collections.shuffle(mUnusedCards);
     }
 

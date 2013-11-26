@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.util.SparseArray;
+
 public class Hero {
 
-    private static final int COUNT = 25;
-
     public static final int UNKNOWN = 0;
+
+    public int id;
+    public String name;
+    public List<String> skills;
 
     public static class Generator {
 
@@ -17,15 +21,11 @@ public class Hero {
 
         // 主公分配 3主公 + 2英雄
         public Generator() {
-            // TODO: 更新实际的规则
             mHeroes = new LinkedList<Integer>();
-            for (int i = 3; i < COUNT; i++) {
-                mHeroes.add(i + 1);
+            for (Hero hero : getHeroes()) {
+                mHeroes.add(hero.id);
             }
-            Collections.shuffle(mHeroes);
-            mHeroes.addFirst(2);
-            mHeroes.addFirst(1);
-            mHeroes.addFirst(0);
+            Collections.shuffle(mHeroes.subList(3, mHeroes.size() - 1));
         }
 
         // 普通角色分配
@@ -44,5 +44,38 @@ public class Hero {
 
             return heroes;
         }
+    }
+
+    public static Hero valueOf(int hero) {
+        return HERO_MAP.get(hero);
+    }
+
+    public static List<Hero> getHeroes() {
+        List<Hero> heroes = new ArrayList<Hero>();
+        for (int i = 0; i < HERO_MAP.size(); i++) {
+            heroes.add(HERO_MAP.valueAt(i));
+        }
+
+        return heroes;
+    }
+
+    private static void map(int hero, String name, String skill1, String skill2) {
+        Hero h = new Hero();
+        h.id = hero;
+        h.name = name;
+        h.skills = new ArrayList<String>();
+        h.skills.add(skill1);
+        if (skill2 != null) {
+            h.skills.add(skill2);
+        }
+        HERO_MAP.append(hero, h);
+    }
+
+    private static final SparseArray<Hero> HERO_MAP;
+
+    static {
+        HERO_MAP = new SparseArray<Hero>();
+        // TODO: 主公需放在前三个
+        map(4000037, "曹操", "奸雄", "护驾");
     }
 }
