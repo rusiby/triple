@@ -3,10 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <com.urd.triple.widget.OthersWidget
+        android:id="@+id/others01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_others" />
+
+    <LinearLayout
+        android:id="@id/layout_others"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <com.urd.triple.widget.OthersWidget
+            android:id="@+id/others02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.urd.triple.widget.OthersWidget
+            android:id="@+id/others03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.urd.triple.widget.OthersWidget
+            android:id="@+id/others04"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.urd.triple.widget.OthersWidget
+            android:id="@+id/others05"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.urd.triple.widget.OthersWidget
+            android:id="@+id/others06"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <com.urd.triple.widget.OthersWidget
+        android:id="@+id/others07"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/layout_others" />
+
     <com.urd.triple.widget.SelfWidget
         android:id="@+id/self"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </com.urd.triple.widget.SelfWidget>
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

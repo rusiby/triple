@@ -1,6 +1,8 @@
 package com.urd.triple;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Dialog;
@@ -14,6 +16,7 @@ import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
+import com.urd.triple.widget.OthersWidget;
 import com.urd.triple.widget.SelectHeroView;
 import com.urd.triple.widget.SelfWidget;
 
@@ -21,6 +24,7 @@ public class GameActivity extends BaseActivity {
     private Dialog mSelecHeroDialog;
     private SelectHeroView mSelcetHeroContaner;
     private SelfWidget mSelfWidget;
+    private List<OthersWidget> mOthersWidgetList;
 
     public static void launch(Context context, Intent intent) {
         intent.setClass(context, GameActivity.class);
@@ -46,10 +50,57 @@ public class GameActivity extends BaseActivity {
 
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
-        mSelfWidget.setPlayer(GameCore.getInstance().getSelf());
+        Player self = GameCore.getInstance().getSelf();
+        mSelfWidget.setPlayer(self);
+        
+        OthersWidget other01 = (OthersWidget) findViewById(R.id.others01);
+        OthersWidget other02 = (OthersWidget) findViewById(R.id.others02);
+        OthersWidget other03 = (OthersWidget) findViewById(R.id.others03);
+        OthersWidget other04 = (OthersWidget) findViewById(R.id.others04);
+        OthersWidget other05 = (OthersWidget) findViewById(R.id.others05);
+        OthersWidget other06 = (OthersWidget) findViewById(R.id.others06);
+        OthersWidget other07 = (OthersWidget) findViewById(R.id.others07);
+        
+        mOthersWidgetList = new ArrayList<OthersWidget>();
+        mOthersWidgetList.add(other01);
+        mOthersWidgetList.add(other02);
+        mOthersWidgetList.add(other03);
+        mOthersWidgetList.add(other04);
+        mOthersWidgetList.add(other05);
+        mOthersWidgetList.add(other06);
+        mOthersWidgetList.add(other07);
+        
+        Collection<Player> players = GameCore.getInstance().getPlayers();
+        if (players != null) {
+            int size = mOthersWidgetList.size();
+
+            int index = 0;
+            Iterator<Player> iter = players.iterator();
+            while (iter.hasNext()) {
+                Player player = (Player) iter.next();
+                if (player != self && index < size) {
+                    mOthersWidgetList.get(index++).setPlayer(player);
+                }
+            }
+        }
 
         showSlectHeroDialog();
+    }
+    
+    private void updateOthers() {
+        Collection<Player> players = GameCore.getInstance().getPlayers();
+        if (players != null) {
+            int size = mOthersWidgetList.size();
 
+            int index = 0;
+            Iterator<Player> iter = players.iterator();
+            while (iter.hasNext()) {
+                Player player = (Player) iter.next();
+                if (player != GameCore.getInstance().getSelf() && index < size) {
+                    mOthersWidgetList.get(index++).update();
+                }
+            }
+        }
     }
 
     private void showSlectHeroDialog() {
@@ -121,11 +172,15 @@ public class GameActivity extends BaseActivity {
             if (mSelecHeroDialog.isShowing()) {
                 mSelecHeroDialog.dismiss();
             }
+            
+            updateOthers();
         }
 
         @Override
         public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
             mSelfWidget.updateCardArea();
+            
+            updateOthers();
         }
 
         @Override
@@ -146,6 +201,8 @@ public class GameActivity extends BaseActivity {
         public void onPlayerRole(Player player) {
             if (player == GameCore.getInstance().getSelf()) {
                 mSelfWidget.updateRole();
+            } else {
+                updateOthers();
             }
         }
 
