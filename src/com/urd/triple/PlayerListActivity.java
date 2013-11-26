@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
@@ -91,7 +92,7 @@ public class PlayerListActivity extends ListActivity {
         }
 
         @Override
-        public void onGameStart(int role) {
+        public void onGameStart(int role, Player lord) {
         }
 
         @Override
@@ -99,11 +100,11 @@ public class PlayerListActivity extends ListActivity {
         }
 
         @Override
-        public void onPlayerSelectHero(Player player, int hero) {
+        public void onPlayerHeroSelected(Player player, int hero) {
         }
 
         @Override
-        public void onCardAction(int card, int srcArea, int dstArea, Player src, Player dst) {
+        public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
         }
 
         @Override
@@ -111,7 +112,11 @@ public class PlayerListActivity extends ListActivity {
         }
 
         @Override
-        public void onPlayerHPChange(Player player) {
+        public void onPlayerHPChanged(Player player) {
+        }
+
+        @Override
+        public void onPlayerRole(Player player) {
         }
 
         @Override

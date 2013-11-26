@@ -11,6 +11,7 @@ import com.urd.triple.core.commands.ChangeHPNotify;
 import com.urd.triple.core.commands.CleanDeskNotify;
 import com.urd.triple.core.commands.Command;
 import com.urd.triple.core.commands.HeroListNotify;
+import com.urd.triple.core.commands.RoleNotify;
 import com.urd.triple.core.commands.SelectHeroNotify;
 import com.urd.triple.core.commands.StartGameNotify;
 
@@ -51,6 +52,10 @@ public class GameProxy {
             onChangeHPNotify((ChangeHPNotify) command);
             break;
 
+        case RoleNotify.ID:
+            onRoleNotify((RoleNotify) command);
+            break;
+
         default:
             break;
         }
@@ -64,8 +69,36 @@ public class GameProxy {
         return mDeskCards;
     }
 
+    public Card getCard(int card, int area, Player player) {
+        Card result = null;
+
+        switch (area) {
+        case Card.AREA_DECK:
+        case Card.AREA_DECK_TOP:
+        case Card.AREA_DECK_BOTTOM:
+            result = new Card(card, Card.AREA_DECK);
+            break;
+
+        case Card.AREA_DESK:
+            result = Card.find(mDeskCards, card);
+            break;
+
+        case Card.AREA_EQUIP:
+        case Card.AREA_JUDGE:
+        case Card.AREA_HAND:
+            result = Card.find(player.cards, card);
+            break;
+
+        default:
+            break;
+        }
+
+        return result;
+    }
+
     private void onStartGameNotify(StartGameNotify notify) {
         mPlayerMananger.get(notify.dst).role = notify.role;
+        mPlayerMananger.get(notify.lordID).role = Role.LORD;
     }
 
     private void onHeroListNotify(HeroListNotify notify) {
@@ -150,5 +183,9 @@ public class GameProxy {
 
     private void onChangeHPNotify(ChangeHPNotify notify) {
         mPlayerMananger.get(notify.src).hp = notify.hp;
+    }
+
+    private void onRoleNotify(RoleNotify notify) {
+        mPlayerMananger.get(notify.src).role = notify.role;
     }
 }

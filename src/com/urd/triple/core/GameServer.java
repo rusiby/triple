@@ -25,6 +25,7 @@ import com.urd.triple.core.commands.LoginNotify;
 import com.urd.triple.core.commands.LoginReq;
 import com.urd.triple.core.commands.LoginResp;
 import com.urd.triple.core.commands.LogoutNotify;
+import com.urd.triple.core.commands.RoleNotify;
 import com.urd.triple.core.commands.SelectHeroNotify;
 import com.urd.triple.core.commands.StartGameNotify;
 import com.urd.triple.core.commands.StartGameReq;
@@ -141,6 +142,10 @@ public class GameServer implements GameSocketListener {
             onChangeHPNotify(mPlayerMananger.get(socket), (ChangeHPNotify) command);
             break;
 
+        case RoleNotify.ID:
+            onRoleNotify(mPlayerMananger.get(socket), (RoleNotify) command);
+            break;
+
         default:
             LOG.warn("invalid command. command={}", command);
             break;
@@ -237,6 +242,12 @@ public class GameServer implements GameSocketListener {
 
     private void onChangeHPNotify(Player player, ChangeHPNotify notify) {
         LOG.info("change hp notify.");
+
+        broadcast(notify);
+    }
+
+    private void onRoleNotify(Player player, RoleNotify notify) {
+        LOG.info("role notify.");
 
         broadcast(notify);
     }

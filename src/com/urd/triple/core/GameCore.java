@@ -24,6 +24,7 @@ import com.urd.triple.core.commands.LoginNotify;
 import com.urd.triple.core.commands.LoginReq;
 import com.urd.triple.core.commands.LoginResp;
 import com.urd.triple.core.commands.LogoutNotify;
+import com.urd.triple.core.commands.RoleNotify;
 import com.urd.triple.core.commands.SelectHeroNotify;
 import com.urd.triple.core.commands.StartGameNotify;
 import com.urd.triple.core.commands.StartGameReq;
@@ -50,17 +51,19 @@ public class GameCore {
 
         void onPlayerLogout(Player player);
 
-        void onGameStart(int role);
+        void onGameStart(int role, Player lord);
 
         void onHeroList(List<Integer> heroes);
 
-        void onPlayerSelectHero(Player player, int hero);
+        void onPlayerHeroSelected(Player player, int hero);
 
-        void onCardAction(int card, int srcArea, int dstArea, Player src, Player dst);
+        void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst);
 
         void onDeskClean();
 
-        void onPlayerHPChange(Player player);
+        void onPlayerHPChanged(Player player);
+
+        void onPlayerRole(Player player);
 
         void onNetworkError();
     }
@@ -139,6 +142,12 @@ public class GameCore {
         LOG.info("change hp. {} => {}", mSelf.hp, hp);
 
         mClient.send(new ChangeHPNotify(hp));
+    }
+
+    public void showRole() {
+        LOG.info("show role. role={}", mSelf.role);
+
+        mClient.send(new RoleNotify(mSelf.role));
     }
 
     public void registerListener(GameListener listener) {
@@ -243,7 +252,7 @@ public class GameCore {
         mGameProxy.execute(notify);
 
         for (GameListener l : mListeners) {
-            l.onGameStart(notify.role);
+            l.onGameStart(notify.role, mPlayerMananger.get(notify.lordID));
         }
     }
 
@@ -260,10 +269,8 @@ public class GameCore {
 
         LOG.info("select hero. player={} hero={}", player.name, notify.hero);
 
-        if (player != mSelf) {
-            for (GameListener l : mListeners) {
-                l.onPlayerSelectHero(player, notify.hero);
-            }
+        for (GameListener l : mListeners) {
+            l.onPlayerHeroSelected(player, notify.hero);
         }
     }
 
@@ -273,11 +280,12 @@ public class GameCore {
         if (notify.dst != null) {
             dst = mPlayerMananger.get(notify.dst);
         }
+        Card card = mGameProxy.getCard(notify.card, notify.dstArea, dst);
 
         LOG.info("card action. action={}", notify);
 
         for (GameListener l : mListeners) {
-            l.onCardAction(notify.card, notify.srcArea, notify.dstArea, src, dst);
+            l.onCardAction(card, notify.srcArea, notify.dstArea, src, dst);
         }
     }
 
@@ -295,8 +303,17 @@ public class GameCore {
 
         if (player != mSelf) {
             for (GameListener l : mListeners) {
-                l.onPlayerHPChange(player);
+                l.onPlayerHPChanged(player);
             }
+        }
+    }
+
+    private void onRoleNotify(RoleNotify notify) {
+        Player player = mPlayerMananger.get(notify.src);
+        LOG.info("role notify. player={} hp=role", player.name, player.role);
+
+        for (GameListener l : mListeners) {
+            l.onPlayerRole(player);
         }
     }
 
@@ -352,6 +369,10 @@ public class GameCore {
 
             case ChangeHPNotify.ID:
                 onChangeHPNotify((ChangeHPNotify) command);
+                break;
+
+            case RoleNotify.ID:
+                onRoleNotify((RoleNotify) command);
                 break;
 
             default:
