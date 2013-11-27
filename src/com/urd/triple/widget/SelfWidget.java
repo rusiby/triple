@@ -3,7 +3,9 @@ package com.urd.triple.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -89,7 +91,11 @@ public class SelfWidget extends RelativeLayout {
         mJudgeHappy = (TextView) findViewById(R.id.happy);
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
         mClear = (Button) findViewById(R.id.clear);
-        mClear.setOnClickListener(onClearDeskListener);
+        mClear.setVisibility(View.GONE);
+        if (mPlayer.isLord()) {
+            mClear.setVisibility(View.VISIBLE);
+            mClear.setOnClickListener(onClearDeskListener);
+        }
         mShowRole = (Button) findViewById(R.id.show_indentity);
         mShowRole.setOnClickListener(onShowRoleClickListener);
         mToDesk = (Button) findViewById(R.id.to_desk);
@@ -261,14 +267,36 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            GameCore.getInstance().cleanDesk();
+            Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GameCore.getInstance().cleanDesk();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+            builder.create().show();
         }
     };
     private OnClickListener onShowRoleClickListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            GameCore.getInstance().showRole();
+            Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GameCore.getInstance().showRole();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+            builder.create().show();
         }
     };
 
