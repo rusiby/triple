@@ -307,10 +307,8 @@ public class GameCore {
         Player player = mPlayerMananger.get(notify.src);
         LOG.info("hp changed. player={} hp={}", player.name, player.hp);
 
-        if (player != mSelf) {
-            for (GameListener l : mListeners) {
-                l.onPlayerHPChanged(player);
-            }
+        for (GameListener l : mListeners) {
+            l.onPlayerHPChanged(player);
         }
     }
 
