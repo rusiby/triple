@@ -148,10 +148,11 @@ public class SelfWidget extends RelativeLayout {
 
         for (int i = 0, len = judgeCards.size(); i < len; i++) {
             String name = judgeCards.get(i).detail.name;
-            if (name.equals("乐不思蜀")) {
-                happyCount++;
-            } else if (name.equals("闪电")) {
+            if (name.equals("闪电")) {
                 thunderCount++;
+
+            } else {
+                happyCount++;
             }
         }
         mJudgeHappy.setText("乐不思蜀：" + happyCount);
