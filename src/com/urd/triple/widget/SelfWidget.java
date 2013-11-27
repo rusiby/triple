@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.urd.triple.CardDetailWindow;
 import com.urd.triple.PlayerDetailWindow;
 import com.urd.triple.R;
 import com.urd.triple.adapter.EquipAdapter;
@@ -78,6 +81,7 @@ public class SelfWidget extends RelativeLayout {
         mDecreaseHp.setOnClickListener(mHpChangeListener);
         mhandCardsArea = (Gallery) findViewById(R.id.cards);
         mhandCardsArea.setAdapter(new CardAdapter());
+        mhandCardsArea.setOnItemClickListener(mOnCardClickListener);
         mEquipList = (ListView) findViewById(R.id.equipment_list);
         mEquipList.setAdapter(new EquipAdapter());
 
@@ -286,6 +290,22 @@ public class SelfWidget extends RelativeLayout {
             showPlayerDetailWindow();
         }
     };
+
+    private OnItemClickListener mOnCardClickListener = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            CardAdapter adapter = (CardAdapter) parent.getAdapter();
+            Card card = adapter.getItem(position);
+
+            showCardDetailWindow(card);
+        }
+    };
+
+    private void showCardDetailWindow(Card card) {
+        CardDetailWindow window = new CardDetailWindow(getContext(), card, mPlayer);
+        window.show();
+    }
 
     private void showPlayerDetailWindow() {
         PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);

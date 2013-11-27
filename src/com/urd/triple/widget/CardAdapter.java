@@ -23,16 +23,6 @@ final class CardAdapter extends BaseAdapter {
         return mHandcard == null ? 0 : mHandcard.size();
     }
 
-    // @Override
-    // public Object instantiateItem(ViewGroup container, int position) {
-    // // PosterView poster = new PosterView(container.getContext());
-    // ImageView img = new ImageView(container.getContext());
-    // img.setImageDrawable(CardAdapter.getCardImage(mHandcard.get(position)));
-    // container.addView(img);
-    //
-    // return img;
-    // }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
