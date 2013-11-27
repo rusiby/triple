@@ -1,13 +1,12 @@
 package com.urd.triple.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import android.util.SparseArray;
 
-public class Card implements Comparable<Card> {
+public class Card {
 
     public static final int UNKNOWN = 0;
 
@@ -34,9 +33,16 @@ public class Card implements Comparable<Card> {
     public transient Detail detail;
 
     public static Card find(List<Card> cards, int card) {
-        int index = Collections.binarySearch(cards, new Card(card));
+        Card result = null;
 
-        return index >= 0 ? cards.get(index) : null;
+        for (Card c : cards) {
+            if (c.id == card) {
+                result = c;
+                break;
+            }
+        }
+
+        return result;
     }
 
     public static Card remove(List<Card> cards, int card) {
@@ -57,52 +63,52 @@ public class Card implements Comparable<Card> {
 
         return cards;
     }
-    
-    public static String calcSuit(int id){
-    	int suit = (id / 100000) % 10;
-    	
-    	String strSuit = null;
-    	switch (suit) {
-		case 1:
-			strSuit = "♠";
-			break;
-		case 2:
-			strSuit = "♣";
-			break;
-		case 3:
-			strSuit = "♦";
-			break;
-		case 4:
-			strSuit = "♥";
-			break;
-		default:
-			break;
-		}
-    	
-    	return strSuit;
+
+    public static String calcSuit(int id) {
+        int suit = (id / 100000) % 10;
+
+        String strSuit = null;
+        switch (suit) {
+        case 1:
+            strSuit = "♠";
+            break;
+        case 2:
+            strSuit = "♣";
+            break;
+        case 3:
+            strSuit = "♦";
+            break;
+        case 4:
+            strSuit = "♥";
+            break;
+        default:
+            break;
+        }
+
+        return strSuit;
     }
-    
+
     public static String calcPoint(int id) {
-    	int point = (id / 1000) % 100;
-    	String strPoint = null;
-    	switch (point) {
-		case 1:
-			strPoint = "A";
-			break;
-		case 11:
-			strPoint = "J";
-			break;
-		case 12:
-			strPoint = "Q";
-			break;
-		case 13:
-			strPoint = "K";
-			break;
-		default:
-			strPoint = String.valueOf(point);
-			break;
-		}
-    	return strPoint;
+        int point = (id / 1000) % 100;
+        String strPoint = null;
+        switch (point) {
+        case 1:
+            strPoint = "A";
+            break;
+        case 11:
+            strPoint = "J";
+            break;
+        case 12:
+            strPoint = "Q";
+            break;
+        case 13:
+            strPoint = "K";
+            break;
+        default:
+            strPoint = String.valueOf(point);
+            break;
+        }
+        return strPoint;
     }
 
     public Card(int id) {
@@ -123,35 +129,30 @@ public class Card implements Comparable<Card> {
         this.detail = detail;
     }
 
-    @Override
-    public int compareTo(Card another) {
-        return Integer.valueOf(id).compareTo(another.id);
-    }
-
     private static void map(int card, String name) {
         Detail detail = new Detail();
         detail.id = card;
         detail.name = name;
         // TODO: 名称加入花色及点数
-        
+
         detail.fullname = String.format(Locale.US, "%s %s", name, createSuit(card));
-        
+
         DETAIL_MAP.append(card, detail);
     }
-    
+
     private static String createSuit(int id) {
-    	String strSuit = calcSuit(id);
-    	
-    	String strPoint = calcPoint(id);
-    	
-    	return String.format(Locale.US, "%s %s", strSuit, strPoint);
+        String strSuit = calcSuit(id);
+
+        String strPoint = calcPoint(id);
+
+        return String.format(Locale.US, "%s %s", strSuit, strPoint);
     }
 
     private static final SparseArray<Detail> DETAIL_MAP;
 
     static {
         DETAIL_MAP = new SparseArray<Card.Detail>();
-        
+
         map(1403001, "桃");
         map(1404001, "桃");
         map(1406001, "桃");
