@@ -42,8 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:padding="@dimen/tv_tb_padding"
-                    android:text="激将" />
+                    android:padding="@dimen/tv_tb_padding" />
 
                 <TextView
                     android:id="@+id/skill_2"
@@ -51,8 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:padding="@dimen/tv_tb_padding"
-                    android:text="仁慈" />
+                    android:padding="@dimen/tv_tb_padding" />
             </LinearLayout>
 
             <LinearLayout

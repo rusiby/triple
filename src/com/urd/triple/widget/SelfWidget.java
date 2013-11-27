@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.urd.triple.CardDetailWindow;
 import com.urd.triple.PlayerDetailWindow;
@@ -71,6 +72,8 @@ public class SelfWidget extends RelativeLayout {
     }
 
     private void setupViews() {
+        mSkill1 = (TextView) findViewById(R.id.skill_1);
+        mSkill2 = (TextView) findViewById(R.id.skill_2);
         mRole = (TextView) findViewById(R.id.role);
         mAvator = (ImageView) findViewById(R.id.avator);
         mAvator.setOnClickListener(mAvatorClickListener);
@@ -91,11 +94,7 @@ public class SelfWidget extends RelativeLayout {
         mJudgeHappy = (TextView) findViewById(R.id.happy);
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
         mClear = (Button) findViewById(R.id.clear);
-        mClear.setVisibility(View.GONE);
-        if (mPlayer.isLord()) {
-            mClear.setVisibility(View.VISIBLE);
-            mClear.setOnClickListener(onClearDeskListener);
-        }
+        mClear.setOnClickListener(onClearDeskListener);
         mShowRole = (Button) findViewById(R.id.show_indentity);
         mShowRole.setOnClickListener(onShowRoleClickListener);
         mToDesk = (Button) findViewById(R.id.to_desk);
@@ -104,16 +103,6 @@ public class SelfWidget extends RelativeLayout {
 
     public void setPlayer(Player self) {
         mPlayer = self;
-
-        updateViews();
-    }
-
-    private void updateViews() {
-        updateRole();
-        updateAvator();
-        updateSkills();
-        updateHp();
-        updateCardArea();
     }
 
     public void updateCardArea() {
@@ -211,12 +200,9 @@ public class SelfWidget extends RelativeLayout {
         // mAvator.setImageResource(0);
     }
 
-    private void updateSkills() {
-        // TODO 更新技能
-        Hero hero = Hero.valueOf(mPlayer.hero);
-
-        if (hero != null) {
-            List<String> skills = hero.skills;
+    public void updateSkills() {
+        List<String> skills = Hero.valueOf(mPlayer.hero).skills;
+        if (skills != null) {
             mSkill1.setText(skills.get(0));
             if (skills.size() > 1) {// 目前最多两个技能
                 mSkill2.setText(skills.get(1));
@@ -267,18 +253,22 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            if (mPlayer.isLord()) {
+                Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            GameCore.getInstance().cleanDesk();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                GameCore.getInstance().cleanDesk();
 
-                            dialog.dismiss();
-                        }
-                    });
+                                dialog.dismiss();
+                            }
+                        });
 
-            builder.create().show();
+                builder.create().show();
+            } else {
+                Toast.makeText(getContext(), "只有主公才可以清台", Toast.LENGTH_SHORT).show();
+            }
         }
     };
     private OnClickListener onShowRoleClickListener = new OnClickListener() {

@@ -54,7 +54,7 @@ public class GameActivity extends BaseActivity {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
         Player self = GameCore.getInstance().getSelf();
         mSelfWidget.setPlayer(self);
-        
+
         OthersWidget other01 = (OthersWidget) findViewById(R.id.others01);
         OthersWidget other02 = (OthersWidget) findViewById(R.id.others02);
         OthersWidget other03 = (OthersWidget) findViewById(R.id.others03);
@@ -62,7 +62,7 @@ public class GameActivity extends BaseActivity {
         OthersWidget other05 = (OthersWidget) findViewById(R.id.others05);
         OthersWidget other06 = (OthersWidget) findViewById(R.id.others06);
         OthersWidget other07 = (OthersWidget) findViewById(R.id.others07);
-        
+
         mOthersWidgetList = new ArrayList<OthersWidget>();
         mOthersWidgetList.add(other01);
         mOthersWidgetList.add(other02);
@@ -71,7 +71,7 @@ public class GameActivity extends BaseActivity {
         mOthersWidgetList.add(other05);
         mOthersWidgetList.add(other06);
         mOthersWidgetList.add(other07);
-        
+
         Collection<Player> players = GameCore.getInstance().getPlayers();
         if (players != null) {
             int size = mOthersWidgetList.size();
@@ -88,7 +88,7 @@ public class GameActivity extends BaseActivity {
 
         showSlectHeroDialog();
     }
-    
+
     private void updateOthers() {
         Collection<Player> players = GameCore.getInstance().getPlayers();
         if (players != null) {
@@ -104,7 +104,7 @@ public class GameActivity extends BaseActivity {
             }
         }
 
-        mDeskCard= (DeskCardView) findViewById(R.id.desk_card);
+        mDeskCard = (DeskCardView) findViewById(R.id.desk_card);
     }
 
     private void showSlectHeroDialog() {
@@ -173,10 +173,14 @@ public class GameActivity extends BaseActivity {
             } else {
                 showToast(player.name + "选择的英雄是:" + Hero.valueOf(hero).name);
             }
+            if (player == GameCore.getInstance().getSelf()) {
+                mSelfWidget.updateSkills();
+            }
+
             if (mSelecHeroDialog.isShowing()) {
                 mSelecHeroDialog.dismiss();
             }
-            
+
             updateOthers();
         }
 

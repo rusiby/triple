@@ -63,7 +63,7 @@ public class PlayerDetailWindow {
         String skills = Hero.valueOf(mPlayer.hero).name + " ";
         List<String> list = Hero.valueOf(mPlayer.hero).skills;
         for (int i = 0, len = list.size(); i < len; i++) {
-            if (TextUtils.isEmpty(list.get(i))) {
+            if (!TextUtils.isEmpty(list.get(i))) {
                 skills = skills + "技能" + i + ":" + list.get(i) + "    ";
             }
         }
