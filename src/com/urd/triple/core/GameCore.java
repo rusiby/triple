@@ -1,6 +1,5 @@
 package com.urd.triple.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -128,12 +127,12 @@ public class GameCore {
         mClient.send(new SelectHeroNotify(hero));
     }
 
-    public void doCardAction(int card, int srcArea, int dstArea, Player target) {
-        String id = null;
-        if (target != null) {
-            id = target.id;
+    public void doCardAction(Card card, int area, Player target) {
+        if (card == null) {
+            card = new Card(Card.UNKNOWN, Card.AREA_DECK);
         }
-        CardActionReq req = new CardActionReq(card, srcArea, dstArea, id);
+        String id = target != null ? target.id : null;
+        CardActionReq req = new CardActionReq(card.id, card.area, area, id);
         LOG.info("do card aciton. req={}", req);
         mClient.send(req);
     }
@@ -190,7 +189,7 @@ public class GameCore {
     public Collection<Player> getPlayers() {
         return mPlayerMananger.getPlayers();
     }
-    
+
     public List<Card> getDeskCards() {
         if (mGameProxy != null) {
             return mGameProxy.getDeskCards();
