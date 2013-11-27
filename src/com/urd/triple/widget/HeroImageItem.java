@@ -7,10 +7,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.urd.triple.R;
+import com.urd.triple.core.CardView;
 
 public class HeroImageItem extends RelativeLayout {
     private ImageView mCheckImage;
-    private ImageView mAvator;
+    private CardView mAvator;
 
     public HeroImageItem(Context context) {
         this(context, null);
@@ -32,12 +33,12 @@ public class HeroImageItem extends RelativeLayout {
     }
 
     private void setupViews() {
-        mAvator = (ImageView) findViewById(R.id.avator);
+        mAvator = (CardView) findViewById(R.id.avator);
         mCheckImage = (ImageView) findViewById(R.id.cb_image);
     }
 
     public void setImage(int i) {
-        mAvator.setImageResource(R.drawable.daqiao);
+        mAvator.setCard(i);
     }
 
     public ImageView getCbImage() {
