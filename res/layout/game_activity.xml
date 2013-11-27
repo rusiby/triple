@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <com.urd.triple.widget.SelectHeroView
+        android:id="@+id/select_hero"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.urd.triple.widget.SelfWidget
         android:id="@+id/self"
         android:layout_width="wrap_content"

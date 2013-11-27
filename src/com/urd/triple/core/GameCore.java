@@ -127,7 +127,11 @@ public class GameCore {
     }
 
     public void doCardAction(int card, int srcArea, int dstArea, Player target) {
-        CardActionReq req = new CardActionReq(card, srcArea, dstArea, target.id);
+        String id = null;
+        if (target != null) {
+            id = target.id;
+        }
+        CardActionReq req = new CardActionReq(card, srcArea, dstArea, id);
         LOG.info("do card aciton. req={}", req);
         mClient.send(req);
     }

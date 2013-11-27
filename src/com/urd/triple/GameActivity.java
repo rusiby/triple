@@ -6,16 +6,16 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
+import com.urd.triple.widget.SelectHeroView;
 import com.urd.triple.widget.SelfWidget;
 
 public class GameActivity extends BaseActivity {
+    private SelectHeroView mSelcetHeroContaner;
     private SelfWidget mSelfWidget;
 
     public static void launch(Context context, Intent intent) {
@@ -38,12 +38,13 @@ public class GameActivity extends BaseActivity {
         super.onDestroy();
 
         GameCore.getInstance().unregisterListener(mGameListener);
-        GameCore.getInstance().close();
     }
 
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
         mSelfWidget.setPlayer(GameCore.getInstance().getSelf());
+        mSelcetHeroContaner = (SelectHeroView) findViewById(R.id.select_hero);
+        mSelcetHeroContaner.setHeros(GameCore.getInstance().getSelf().heroes);
     }
 
     private final GameListener mGameListener = new GameListener() {
@@ -70,10 +71,13 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onHeroList(List<Integer> heroes) {
+            mSelcetHeroContaner.updateView(heroes);
         }
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
+            showToast(player.name + "选择的英雄是:" + hero);
+            mSelcetHeroContaner.setVisibility(View.GONE);
         }
 
         @Override
@@ -86,22 +90,22 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onPlayerHPChanged(Player player) {
+            if (player == GameCore.getInstance().getSelf()) {
+                mSelfWidget.updateHp();
+            } else {
+                // TODO 其他人掉血的逻辑
+            }
         }
 
         @Override
         public void onPlayerRole(Player player) {
+            if (player == GameCore.getInstance().getSelf()) {
+                mSelfWidget.updateRole();
+            }
         }
 
         @Override
         public void onNetworkError() {
-        }
-    };
-
-    private static final OnClickListener mGetCardClickListener = new OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-
         }
     };
 

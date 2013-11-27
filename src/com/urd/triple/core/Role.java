@@ -54,6 +54,8 @@ public class Role {
 
     static {
         ROLE_MAP = new SparseArray<List<Integer>>();
+        //TODO 测试完成之后删除 2个玩家的情况
+        add(ROLE_MAP, 0, 0, 1); // 2
         add(ROLE_MAP, 1, 1, 1); // 4
         add(ROLE_MAP, 1, 2, 1); // 5
         add(ROLE_MAP, 1, 3, 1); // 6
