@@ -82,9 +82,13 @@ public class GameServer implements GameSocketListener {
 
             @Override
             public void run() {
-                LocalGameSocket s = new LocalGameSocket(GameServer.this, socket);
-                LOG.info("local socket accept.");
-                mClients.add(s);
+                if (mAcceptThread.isAlive()) {
+                    LocalGameSocket s = new LocalGameSocket(GameServer.this, socket);
+                    LOG.info("local socket accept.");
+                    mClients.add(s);
+                } else {
+                    socket.close();
+                }
             }
         });
     }

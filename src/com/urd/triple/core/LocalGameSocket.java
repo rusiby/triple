@@ -16,16 +16,19 @@ public class LocalGameSocket extends GameSocket {
 
     private PipedInputStream mInputStream;
     private PipedOutputStream mOutputStream;
+    private boolean mConnecting;
 
     public LocalGameSocket(GameSocketListener listener, LocalGameSocket other) {
         super(listener);
 
+        mConnecting = true;
         if (other != null) {
             try {
                 other.mOutputStream = new PipedOutputStream();
                 other.mInputStream = new PipedInputStream();
                 mInputStream = new PipedInputStream(other.mOutputStream);
                 mOutputStream = new PipedOutputStream(other.mInputStream);
+                mConnecting = false;
             } catch (IOException e) {
                 LOG.warn("connect pipe failed.", e);
             }
@@ -41,6 +44,12 @@ public class LocalGameSocket extends GameSocket {
     @Override
     public void close() {
         super.close();
+
+        if (mConnecting) {
+            mConnecting = false;
+
+            notifyConnectFailed();
+        }
 
         if (mInputStream != null) {
             try {
