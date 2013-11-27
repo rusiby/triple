@@ -3,9 +3,11 @@ package com.urd.triple;
 import java.util.Collection;
 import java.util.List;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
@@ -15,6 +17,7 @@ import com.urd.triple.widget.SelectHeroView;
 import com.urd.triple.widget.SelfWidget;
 
 public class GameActivity extends BaseActivity {
+    private Dialog mSelecHeroDialog;
     private SelectHeroView mSelcetHeroContaner;
     private SelfWidget mSelfWidget;
 
@@ -43,8 +46,38 @@ public class GameActivity extends BaseActivity {
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
         mSelfWidget.setPlayer(GameCore.getInstance().getSelf());
-        mSelcetHeroContaner = (SelectHeroView) findViewById(R.id.select_hero);
+
+        showSlectHeroDialog();
+
+    }
+
+    private void showSlectHeroDialog() {
+
+        mSelecHeroDialog = new Dialog(this,
+                android.R.style.Theme_Light_Panel);
+        shadow(mSelecHeroDialog);
+        mSelcetHeroContaner = new SelectHeroView(this);
         mSelcetHeroContaner.setHeros(GameCore.getInstance().getSelf().heroes);
+        mSelecHeroDialog.getWindow().setContentView(
+                mSelcetHeroContaner);
+        if (GameCore.getInstance().getSelf().heroes != null && GameCore.getInstance().getSelf().heroes.size() > 0) {
+            mSelecHeroDialog.show();
+        }
+        mSelecHeroDialog.setCancelable(false);
+        mSelecHeroDialog.setCanceledOnTouchOutside(false);
+
+    }
+
+    /**
+     * 设置阴影
+     * 
+     * @param dialog
+     */
+    private void shadow(Dialog dialog) {
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        lp.dimAmount = 0.3f;
+        dialog.getWindow().setAttributes(lp);
     }
 
     private final GameListener mGameListener = new GameListener() {
@@ -71,21 +104,32 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onHeroList(List<Integer> heroes) {
-            mSelcetHeroContaner.updateView(heroes);
+            if (!mSelecHeroDialog.isShowing()) {
+                mSelecHeroDialog.show();
+                mSelcetHeroContaner.setHeros(heroes);
+            }
         }
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
-            showToast(player.name + "选择的英雄是:" + hero);
-            mSelcetHeroContaner.setVisibility(View.GONE);
+            if (getDefaultSharedPreferences().getString("nickName", "").trim().equals(player.name)) {
+                showToast("您选择的英雄是:" + hero);
+            } else {
+                showToast(player.name + "选择的英雄是:" + hero);
+            }
+            if (mSelecHeroDialog.isShowing()) {
+                mSelecHeroDialog.dismiss();
+            }
         }
 
         @Override
         public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
+
         }
 
         @Override
         public void onDeskClean() {
+
         }
 
         @Override

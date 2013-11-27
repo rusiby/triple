@@ -3,6 +3,7 @@ package com.urd.triple.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.urd.triple.PlayerDetailWindow;
 import com.urd.triple.R;
 import com.urd.triple.adapter.EquipAdapter;
 import com.urd.triple.core.Card;
@@ -35,6 +37,9 @@ public class SelfWidget extends RelativeLayout {
     private Button mGetCard;
     private Button mIncreaseHp;
     private Button mDecreaseHp;
+    private Button mClear;
+    private Button mShowRole;
+    private Button mToDesk;
     private ViewPager mhandCardsArea;
     private ListView mEquipList;
 
@@ -64,6 +69,7 @@ public class SelfWidget extends RelativeLayout {
     private void setupViews() {
         mRole = (TextView) findViewById(R.id.role);
         mAvator = (ImageView) findViewById(R.id.avator);
+        mAvator.setOnClickListener(mAvatorClickListener);
         mGetCard = (Button) findViewById(R.id.get_card);
         mGetCard.setOnClickListener(mGetCardListener);
         mHp = (TextView) findViewById(R.id.hp);
@@ -78,6 +84,12 @@ public class SelfWidget extends RelativeLayout {
 
         mJudgeHappy = (TextView) findViewById(R.id.happy);
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
+        mClear = (Button) findViewById(R.id.clear);
+        mClear.setOnClickListener(onClearDeskListener);
+        mShowRole = (Button) findViewById(R.id.show_indentity);
+        mShowRole.setOnClickListener(onShowRoleClickListener);
+        mToDesk = (Button) findViewById(R.id.to_desk);
+        mToDesk.setOnClickListener(mGetCardListener);
     }
 
     public void setPlayer(Player self) {
@@ -181,7 +193,7 @@ public class SelfWidget extends RelativeLayout {
             break;
         }
 
-        mRole.setText(roleName);
+        mRole.setText(mPlayer.name + "：" + roleName);
     }
 
     private void updateAvator() {
@@ -215,7 +227,34 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_HAND, null);
+            switch (v.getId()) {
+            case R.id.get_card:
+                GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_HAND, null);
+                break;
+
+            case R.id.to_desk:
+                GameCore.getInstance().doCardAction(Card.UNKNOWN, Card.AREA_DECK, Card.AREA_DESK, null);
+                break;
+
+            default:
+                break;
+            }
+
+        }
+    };
+
+    private OnClickListener onClearDeskListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            GameCore.getInstance().cleanDesk();
+        }
+    };
+    private OnClickListener onShowRoleClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            GameCore.getInstance().showRole();
         }
     };
 
@@ -240,4 +279,17 @@ public class SelfWidget extends RelativeLayout {
             GameCore.getInstance().changeHP(hp);
         }
     };
+
+    private OnClickListener mAvatorClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            showPlayerDetailWindow();
+        }
+    };
+
+    private void showPlayerDetailWindow() {
+        PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
+        window.show();
+    }
 }

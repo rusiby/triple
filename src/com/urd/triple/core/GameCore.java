@@ -174,8 +174,10 @@ public class GameCore {
 
             mServer = null;
         }
-        mGameProxy.clear();
-        mGameProxy = null;
+        if (mGameProxy != null) {
+            mGameProxy.clear();
+            mGameProxy = null;
+        }
         mPlayerMananger.clear();
     }
 
@@ -284,7 +286,7 @@ public class GameCore {
         if (notify.dst != null) {
             dst = mPlayerMananger.get(notify.dst);
         }
-        Card card = mGameProxy.getCard(notify.card, notify.dstArea, dst);
+        Card card = mGameProxy.getCard(notify.card, notify.dstArea, src);
 
         LOG.info("card action. action={}", notify);
 
@@ -305,10 +307,8 @@ public class GameCore {
         Player player = mPlayerMananger.get(notify.src);
         LOG.info("hp changed. player={} hp={}", player.name, player.hp);
 
-        if (player != mSelf) {
-            for (GameListener l : mListeners) {
-                l.onPlayerHPChanged(player);
-            }
+        for (GameListener l : mListeners) {
+            l.onPlayerHPChanged(player);
         }
     }
 

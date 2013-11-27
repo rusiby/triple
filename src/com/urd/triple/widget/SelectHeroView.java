@@ -38,27 +38,29 @@ public class SelectHeroView extends LinearLayout {
 
     private void setupViews() {
         mSelectHeroLayout = (LinearLayout) findViewById(R.id.ll_select_hero);
-        Button view_select_ok = (Button) findViewById(R.id.btn_select_ok);
-        view_select_ok.setOnClickListener(new OnClickListener() {
+        Button btnOk = (Button) findViewById(R.id.btn_select_ok);
+        btnOk.setOnClickListener(mOnClickListener);
+    }
 
-            @Override
-            public void onClick(View v) {
-                for (int j = 0; j < mSelectHeroLayout.getChildCount(); j++) {
-                    if (((HeroImageItem) mSelectHeroLayout.getChildAt(j)).getCbImage().getVisibility() == View.VISIBLE) {
-                        Integer selectId = (Integer) (((HeroImageItem) mSelectHeroLayout.getChildAt(j)).getTag());
+    private OnClickListener mOnClickListener = new OnClickListener() {
 
-                        GameCore.getInstance().selectHero(Integer.valueOf(selectId));
-
-                        break;
-                    }
+        @Override
+        public void onClick(View v) {
+            for (int j = 0; j < mSelectHeroLayout.getChildCount(); j++) {
+                HeroImageItem item = (HeroImageItem) mSelectHeroLayout.getChildAt(j);
+                if (item.getCbImage().getVisibility() == View.VISIBLE) {
+                    Integer selectId = (Integer) item.getTag();
+                    GameCore.getInstance().selectHero(Integer.valueOf(selectId));
+                    break;
                 }
             }
-        });
-    }
+        }
+    };
 
     public void setHeros(List<Integer> heros) {
         mHeros = heros;
-        if (mHeros != null) {
+        if (mHeros != null && heros.size() > 0) {
+            mSelectHeroLayout.removeAllViews();
             for (int i = 0; i < heros.size(); i++) {
                 addHeroImage(heros.get(i));
             }
@@ -86,10 +88,4 @@ public class SelectHeroView extends LinearLayout {
         });
         mSelectHeroLayout.addView(imageItem);
     }
-
-    public void updateView(List<Integer> heros) {
-        removeAllViews();
-        setHeros(heros);
-    }
-
 }
