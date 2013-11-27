@@ -146,26 +146,8 @@ public class GameProxy {
         case Card.AREA_HAND:
             if (notify.dst != null) {
                 Player p = mPlayerMananger.get(notify.dst);
-                card = Card.find(p.cards, notify.card);
-                if (card != null && card.area == notify.srcArea) {
-                    p.cards.remove(card);
-                    card.area = notify.dstArea;
-                    switch (notify.dstArea) {
-                    case Card.AREA_DESK:
-                        mDeskCards.add(card);
-                        break;
-
-                    case Card.AREA_EQUIP:
-                    case Card.AREA_JUDGE:
-                    case Card.AREA_HAND:
-                        player.cards.add(card);
-                        break;
-
-                    default:
-                        break;
-                    }
-                } else {
-                    LOG.warn("card not exist. card={} area={}", notify.card, notify.srcArea);
+                if (!doCardAction(p, player, notify)) {
+                    doCardAction(player, p, notify);
                 }
             } else {
                 LOG.warn("dst not exist. dst={}", notify.dst);
@@ -187,5 +169,33 @@ public class GameProxy {
 
     private void onRoleNotify(RoleNotify notify) {
         mPlayerMananger.get(notify.src).role = notify.role;
+    }
+
+    private boolean doCardAction(Player src, Player dst, CardActionNotify notify) {
+        Card card = Card.find(src.cards, notify.card);
+        if (card != null) {
+            if (card.area == notify.srcArea) {
+                src.cards.remove(card);
+                card.area = notify.dstArea;
+                switch (notify.dstArea) {
+                case Card.AREA_DESK:
+                    mDeskCards.add(card);
+                    break;
+
+                case Card.AREA_EQUIP:
+                case Card.AREA_JUDGE:
+                case Card.AREA_HAND:
+                    dst.cards.add(card);
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        } else {
+            LOG.warn("card not exist. card={} area={}", notify.card, notify.srcArea);
+        }
+
+        return card != null;
     }
 }
