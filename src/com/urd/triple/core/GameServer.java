@@ -186,7 +186,7 @@ public class GameServer implements GameSocketListener {
 
                 Hero.Generator heroGenerator = new Hero.Generator();
                 if (p.role == Role.LORD) {
-                    sendTo(new HeroListNotify(heroGenerator.generate(5)), player);
+                    sendTo(new HeroListNotify(heroGenerator.generate(5)), p);
                 }
             }
 
