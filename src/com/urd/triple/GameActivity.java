@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
+import com.urd.triple.core.Hero;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
 import com.urd.triple.widget.SelectHeroView;
@@ -113,9 +114,9 @@ public class GameActivity extends BaseActivity {
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
             if (getDefaultSharedPreferences().getString("nickName", "").trim().equals(player.name)) {
-                showToast("您选择的英雄是:" + hero);
+                showToast("您选择的英雄是:" + Hero.valueOf(hero).name);
             } else {
-                showToast(player.name + "选择的英雄是:" + hero);
+                showToast(player.name + "选择的英雄是:" + Hero.valueOf(hero).name);
             }
             if (mSelecHeroDialog.isShowing()) {
                 mSelecHeroDialog.dismiss();
