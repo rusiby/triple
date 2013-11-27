@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -130,16 +131,9 @@ public class SelfWidget extends RelativeLayout {
             }
         }
 
-        if (handCards != null) {
-            updateHandCardArea(handCards);
-        }
-
-        if (equipCards != null) {
-            updateEquipArea(equipCards);
-        }
-        if (judgeCards != null) {
-            updateJudgeCardArea(judgeCards);
-        }
+        updateHandCardArea(handCards);
+        updateEquipArea(equipCards);
+        updateJudgeCardArea(judgeCards);
     }
 
     public void updateJudgeCardArea(List<Card> judgeCards) {

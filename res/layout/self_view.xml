@@ -53,18 +53,12 @@
                     android:padding="@dimen/tv_tb_padding" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+            <ListView
+                android:id="@+id/equipment_list"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignBottom="@id/skill_container"
-                android:layout_toRightOf="@id/role" >
-
-                <ListView
-                    android:id="@+id/equipment_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </ListView>
-            </LinearLayout>
+                android:layout_toRightOf="@id/role" />
         </RelativeLayout>
 
         <LinearLayout
