@@ -29,7 +29,13 @@ public class Hero {
             for (Hero hero : getHeroes()) {
                 mHeroes.add(hero.id);
             }
-            Collections.shuffle(mHeroes.subList(3, mHeroes.size() - 1));
+            Collections.shuffle(mHeroes);
+            mHeroes.remove(Integer.valueOf(201));
+            mHeroes.remove(Integer.valueOf(210));
+            mHeroes.remove(Integer.valueOf(216));
+            mHeroes.addFirst(216);
+            mHeroes.addFirst(210);
+            mHeroes.addFirst(201);
         }
 
         // 普通角色分配
