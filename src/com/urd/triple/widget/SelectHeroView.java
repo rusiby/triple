@@ -52,14 +52,15 @@ public class SelectHeroView extends LinearLayout {
                     Integer selectId = (Integer) item.getTag();
                     GameCore.getInstance().selectHero(Integer.valueOf(selectId));
                     break;
-                } 
+                }
             }
         }
     };
 
     public void setHeros(List<Integer> heros) {
         mHeros = heros;
-        if (mHeros != null) {
+        if (mHeros != null && heros.size() > 0) {
+            mSelectHeroLayout.removeAllViews();
             for (int i = 0; i < heros.size(); i++) {
                 addHeroImage(heros.get(i));
             }
@@ -87,10 +88,4 @@ public class SelectHeroView extends LinearLayout {
         });
         mSelectHeroLayout.addView(imageItem);
     }
-
-    public void updateView(List<Integer> heros) {
-        mSelectHeroLayout.removeAllViews();
-        setHeros(heros);
-    }
-
 }
