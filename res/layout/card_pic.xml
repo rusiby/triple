@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
-
-    <ImageView
-        android:id="@+id/card_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="card"
-        android:scaleType="center" />
+    android:layout_width="80dp"
+    android:layout_height="100dp" >
 
     <TextView
         android:id="@+id/card_points"
@@ -18,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/card_suit"
         android:layout_below="@+id/card_suit"
-        android:textSize="30sp" />
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/card_suit"
@@ -26,8 +18,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="19dp"
-        android:layout_marginTop="23dp"
-        android:textSize="30sp" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/indicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/indicator" />
 
 </RelativeLayout>

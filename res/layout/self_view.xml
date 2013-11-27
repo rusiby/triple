@@ -139,7 +139,7 @@
         android:layout_alignTop="@id/self_contanier"
         android:layout_toRightOf="@id/self_contanier" >
 
-        <android.support.v4.view.ViewPager
+        <Gallery
             android:id="@+id/cards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -164,14 +164,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="清台" />
-
-            <Button
-                android:id="@+id/undo_clear "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="撤销清台" />
-            \  
 
             <Button
                 android:id="@+id/to_desk"

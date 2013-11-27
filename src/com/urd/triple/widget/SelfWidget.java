@@ -3,14 +3,13 @@ package com.urd.triple.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -40,7 +39,7 @@ public class SelfWidget extends RelativeLayout {
     private Button mClear;
     private Button mShowRole;
     private Button mToDesk;
-    private ViewPager mhandCardsArea;
+    private Gallery mhandCardsArea;
     private ListView mEquipList;
 
     public SelfWidget(Context context) {
@@ -77,7 +76,7 @@ public class SelfWidget extends RelativeLayout {
         mIncreaseHp.setOnClickListener(mHpChangeListener);
         mDecreaseHp = (Button) findViewById(R.id.hp_decrease);
         mDecreaseHp.setOnClickListener(mHpChangeListener);
-        mhandCardsArea = (ViewPager) findViewById(R.id.cards);
+        mhandCardsArea = (Gallery) findViewById(R.id.cards);
         mhandCardsArea.setAdapter(new CardAdapter());
         mEquipList = (ListView) findViewById(R.id.equipment_list);
         mEquipList.setAdapter(new EquipAdapter());
@@ -106,7 +105,7 @@ public class SelfWidget extends RelativeLayout {
         updateCardArea();
     }
 
-    private void updateCardArea() {
+    public void updateCardArea() {
         List<Card> cards = mPlayer.cards;
         List<Card> handCards = new ArrayList<Card>();
         List<Card> equipCards = new ArrayList<Card>();

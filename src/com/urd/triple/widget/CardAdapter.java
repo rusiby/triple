@@ -2,15 +2,14 @@ package com.urd.triple.widget;
 
 import java.util.List;
 
-import android.graphics.drawable.Drawable;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.BaseAdapter;
 
 import com.urd.triple.core.Card;
+import com.urd.triple.core.CardView;
 
-final class CardAdapter extends PagerAdapter {
+final class CardAdapter extends BaseAdapter {
 
     private List<Card> mHandcard;
 
@@ -24,30 +23,35 @@ final class CardAdapter extends PagerAdapter {
         return mHandcard == null ? 0 : mHandcard.size();
     }
 
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        // PosterView poster = new PosterView(container.getContext());
-        ImageView img = new ImageView(container.getContext());
-        img.setImageDrawable(CardAdapter.getCardImage(mHandcard.get(position)));
-        container.addView(img);
+    // @Override
+    // public Object instantiateItem(ViewGroup container, int position) {
+    // // PosterView poster = new PosterView(container.getContext());
+    // ImageView img = new ImageView(container.getContext());
+    // img.setImageDrawable(CardAdapter.getCardImage(mHandcard.get(position)));
+    // container.addView(img);
+    //
+    // return img;
+    // }
 
-        return img;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = new CardView(parent.getContext());
+        }
+
+        ((CardView) convertView).setCard(getItem(position).id);
+
+        return convertView;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        ImageView view = (ImageView) object;
-
-        container.removeView(view);
+    public Card getItem(int position) {
+        return mHandcard == null ? null : mHandcard.get(position);
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
-
-    private static Drawable getCardImage(Card card) {
-        return null;
+    public long getItemId(int position) {
+        return position;
     }
 
 }
