@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.urd.triple.R;
 import com.urd.triple.core.GameCore;
@@ -64,6 +65,10 @@ public class SelectHeroView extends LinearLayout {
             for (int i = 0; i < heros.size(); i++) {
                 addHeroImage(heros.get(i));
             }
+        }else {
+            TextView tipText=new TextView(getContext());
+            tipText.setText("等待主公选将，请稍后");
+            mSelectHeroLayout.addView(tipText);
         }
     }
 

@@ -116,9 +116,7 @@ public class GameActivity extends BaseActivity {
         mSelcetHeroContaner.setHeros(GameCore.getInstance().getSelf().heroes);
         mSelecHeroDialog.getWindow().setContentView(
                 mSelcetHeroContaner);
-        if (GameCore.getInstance().getSelf().heroes != null && GameCore.getInstance().getSelf().heroes.size() > 0) {
-            mSelecHeroDialog.show();
-        }
+        mSelecHeroDialog.show();
         mSelecHeroDialog.setCancelable(false);
         mSelecHeroDialog.setCanceledOnTouchOutside(false);
 
@@ -161,8 +159,8 @@ public class GameActivity extends BaseActivity {
         @Override
         public void onHeroList(List<Integer> heroes) {
             if (!mSelecHeroDialog.isShowing()) {
-                mSelecHeroDialog.show();
                 mSelcetHeroContaner.setHeros(heroes);
+                mSelecHeroDialog.show();
             }
         }
 
@@ -171,7 +169,10 @@ public class GameActivity extends BaseActivity {
             if (getDefaultSharedPreferences().getString("nickName", "").trim().equals(player.name)) {
                 showToast("您选择的英雄是:" + Hero.valueOf(hero).name);
             } else {
-                showToast(player.name + "选择的英雄是:" + Hero.valueOf(hero).name);
+                // 主公才收到通知
+                if (player.isLord()) {
+                    showToast(player.name + "选择的英雄是:" + Hero.valueOf(hero).name);
+                }
             }
             if (player == GameCore.getInstance().getSelf()) {
                 mSelfWidget.updateSkills();
@@ -188,12 +189,12 @@ public class GameActivity extends BaseActivity {
         public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
             mSelfWidget.updateCardArea();
             updateOthers();
-            mDeskCard.updateViews();
+            mDeskCard.updateViews(dst);
         }
 
         @Override
         public void onDeskClean() {
-
+            mDeskCard.updateViews(null);
         }
 
         @Override
