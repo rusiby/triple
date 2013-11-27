@@ -286,7 +286,7 @@ public class GameCore {
         if (notify.dst != null) {
             dst = mPlayerMananger.get(notify.dst);
         }
-        Card card = mGameProxy.getCard(notify.card, notify.dstArea, dst);
+        Card card = mGameProxy.getCard(notify.card, notify.dstArea, src);
 
         LOG.info("card action. action={}", notify);
 
