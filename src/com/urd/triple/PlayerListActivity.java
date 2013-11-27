@@ -85,6 +85,7 @@ public class PlayerListActivity extends ListActivity {
         @Override
         public void onPlayerLogin(Player player) {
             mAdapter.update();
+            showToast(player.name+"加入了游戏，大家欢迎！");
         }
 
         @Override

@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
@@ -72,11 +73,16 @@ public class GameActivity extends BaseActivity {
         @Override
         public void onHeroList(List<Integer> heroes) {
             mSelcetHeroContaner.updateView(heroes);
+            mSelcetHeroContaner.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
-            showToast(player.name + "选择的英雄是:" + hero);
+            if (getDefaultSharedPreferences().getString("nickName", "").trim().equals(player.name)) {
+                showToast("您选择的英雄是:" + hero);
+            } else {
+                showToast(player.name + "选择的英雄是:" + hero);
+            }
             mSelcetHeroContaner.setVisibility(View.GONE);
         }
 

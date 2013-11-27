@@ -38,23 +38,24 @@ public class SelectHeroView extends LinearLayout {
 
     private void setupViews() {
         mSelectHeroLayout = (LinearLayout) findViewById(R.id.ll_select_hero);
-        Button view_select_ok = (Button) findViewById(R.id.btn_select_ok);
-        view_select_ok.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                for (int j = 0; j < mSelectHeroLayout.getChildCount(); j++) {
-                    if (((HeroImageItem) mSelectHeroLayout.getChildAt(j)).getCbImage().getVisibility() == View.VISIBLE) {
-                        Integer selectId = (Integer) (((HeroImageItem) mSelectHeroLayout.getChildAt(j)).getTag());
-
-                        GameCore.getInstance().selectHero(Integer.valueOf(selectId));
-
-                        break;
-                    }
-                }
-            }
-        });
+        Button btnOk = (Button) findViewById(R.id.btn_select_ok);
+        btnOk.setOnClickListener(mOnClickListener);
     }
+
+    private OnClickListener mOnClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            for (int j = 0; j < mSelectHeroLayout.getChildCount(); j++) {
+                HeroImageItem item = (HeroImageItem) mSelectHeroLayout.getChildAt(j);
+                if (item.getCbImage().getVisibility() == View.VISIBLE) {
+                    Integer selectId = (Integer) item.getTag();
+                    GameCore.getInstance().selectHero(Integer.valueOf(selectId));
+                    break;
+                } 
+            }
+        }
+    };
 
     public void setHeros(List<Integer> heros) {
         mHeros = heros;
@@ -88,7 +89,7 @@ public class SelectHeroView extends LinearLayout {
     }
 
     public void updateView(List<Integer> heros) {
-        removeAllViews();
+        mSelectHeroLayout.removeAllViews();
         setHeros(heros);
     }
 
