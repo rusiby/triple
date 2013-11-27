@@ -11,9 +11,11 @@ import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
+import com.urd.triple.widget.SelectHeroView;
 import com.urd.triple.widget.SelfWidget;
 
 public class GameActivity extends BaseActivity {
+    private SelectHeroView mSelcetHeroContaner;
     private SelfWidget mSelfWidget;
 
     public static void launch(Context context, Intent intent) {
@@ -41,6 +43,8 @@ public class GameActivity extends BaseActivity {
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
         mSelfWidget.setPlayer(GameCore.getInstance().getSelf());
+        mSelcetHeroContaner = (SelectHeroView) findViewById(R.id.select_hero);
+        mSelcetHeroContaner.setHeros(GameCore.getInstance().getSelf().heroes);
     }
 
     private final GameListener mGameListener = new GameListener() {
@@ -67,10 +71,13 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onHeroList(List<Integer> heroes) {
+            mSelcetHeroContaner.updateView(heroes);
         }
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
+            showToast(player.name + "选择的英雄是:" + hero);
+            mSelcetHeroContaner.setVisibility(View.GONE);
         }
 
         @Override
