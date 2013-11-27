@@ -14,6 +14,7 @@ public class Hero {
 
     public int id;
     public String name;
+    public String pic;
     public String portraitPic;
     public List<String> skills;
 
@@ -65,7 +66,8 @@ public class Hero {
         Hero h = new Hero();
         h.id = hero;
         h.name = name;
-        h.portraitPic = String.format(Locale.US, "3%2d.jpg", hero % 100);
+        h.pic = String.format(Locale.US, "2%02d.png", hero % 100);
+        h.portraitPic = String.format(Locale.US, "3%02d.jpg", hero % 100);
         h.skills = new ArrayList<String>();
         h.skills.add(skill1);
         if (skill2 != null) {
