@@ -17,6 +17,7 @@ import com.urd.triple.core.Hero;
 import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Player;
 import com.urd.triple.widget.OthersWidget;
+import com.urd.triple.widget.DeskCardView;
 import com.urd.triple.widget.SelectHeroView;
 import com.urd.triple.widget.SelfWidget;
 
@@ -25,6 +26,7 @@ public class GameActivity extends BaseActivity {
     private SelectHeroView mSelcetHeroContaner;
     private SelfWidget mSelfWidget;
     private List<OthersWidget> mOthersWidgetList;
+    private DeskCardView mDeskCard;
 
     public static void launch(Context context, Intent intent) {
         intent.setClass(context, GameActivity.class);
@@ -101,6 +103,8 @@ public class GameActivity extends BaseActivity {
                 }
             }
         }
+
+        mDeskCard= (DeskCardView) findViewById(R.id.desk_card);
     }
 
     private void showSlectHeroDialog() {
@@ -179,8 +183,8 @@ public class GameActivity extends BaseActivity {
         @Override
         public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
             mSelfWidget.updateCardArea();
-            
             updateOthers();
+            mDeskCard.updateViews();
         }
 
         @Override

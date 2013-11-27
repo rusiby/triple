@@ -1,6 +1,8 @@
 package com.urd.triple.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -187,6 +189,13 @@ public class GameCore {
 
     public Collection<Player> getPlayers() {
         return mPlayerMananger.getPlayers();
+    }
+    
+    public List<Card> getDeskCards() {
+        if (mGameProxy != null) {
+            return mGameProxy.getDeskCards();
+        }
+        return Collections.emptyList();
     }
 
     public boolean isMaster() {
