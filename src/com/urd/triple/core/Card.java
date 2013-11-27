@@ -24,6 +24,7 @@ public class Card {
 
         public int id;
         public String name;
+        public String shortName;
         public String fullname;
 
     }
@@ -133,8 +134,8 @@ public class Card {
         Detail detail = new Detail();
         detail.id = card;
         detail.name = name;
-        // TODO: 名称加入花色及点数
-
+        int endIndex = name.length() > 2 ? 2 : name.length();
+        detail.shortName = name.substring(0, endIndex);
         detail.fullname = String.format(Locale.US, "%s %s", name, createSuit(card));
 
         DETAIL_MAP.append(card, detail);
