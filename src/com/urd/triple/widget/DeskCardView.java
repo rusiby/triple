@@ -7,9 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.RelativeLayout;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;

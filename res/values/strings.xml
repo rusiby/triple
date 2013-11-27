@@ -8,5 +8,7 @@
     <string name="host">加入主机</string>
     <string name="creating">正在创建&#8230;</string>
     <string name="connecting">正在加入&#8230;</string>
+    <string name="ok">确　定</string>
+    <string name="cancel">取　消</string>
 
 </resources>

@@ -170,30 +170,12 @@ public class SelfWidget extends RelativeLayout {
     }
 
     public void updateRole() {
-        String roleName = null;
-        switch (mPlayer.role) {
-        case Role.LORD:
-            roleName = "主公";
-            break;
-
-        case Role.LOYALIST:
-            roleName = "忠臣";
-            break;
-
-        case Role.REBEL:
-            roleName = "反贼";
-            break;
-
-        case Role.TRAITOR:
-            roleName = "内奸";
-            break;
-
-        default:
-            roleName = "error";
-            break;
+        String info = "";
+        if (mPlayer.hero != Hero.UNKNOWN) {
+            info += Hero.valueOf(mPlayer.hero).name + " ";
         }
-
-        mRole.setText(mPlayer.name + "：" + roleName);
+        info += Role.getName(mPlayer.role);
+        mRole.setText(info);
     }
 
     private void updateAvator() {

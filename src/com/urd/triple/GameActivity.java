@@ -5,28 +5,33 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
-import com.urd.triple.core.Hero;
 import com.urd.triple.core.GameCore.GameListener;
+import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
-import com.urd.triple.widget.OthersWidget;
 import com.urd.triple.widget.DeskCardView;
-import com.urd.triple.widget.SelectHeroView;
+import com.urd.triple.widget.HeroListAdapter;
+import com.urd.triple.widget.HeroView;
+import com.urd.triple.widget.OthersWidget;
 import com.urd.triple.widget.SelfWidget;
 
 public class GameActivity extends BaseActivity {
-    private Dialog mSelecHeroDialog;
-    private SelectHeroView mSelcetHeroContaner;
+
     private SelfWidget mSelfWidget;
     private List<OthersWidget> mOthersWidgetList;
     private DeskCardView mDeskCard;
+    private GameCore mGameCore;
+    private Dialog mHeroListDialog;
 
     public static void launch(Context context, Intent intent) {
         intent.setClass(context, GameActivity.class);
@@ -38,9 +43,71 @@ public class GameActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_activity);
-        GameCore.getInstance().registerListener(mGameListener);
+
+        mGameCore = GameCore.getInstance();
+
+        mGameCore.registerListener(mGameListener);
 
         setupViews();
+
+        if (mGameCore.getSelf().hero == Hero.UNKNOWN) {
+            showHeroList();
+        }
+    }
+
+    private void showHeroList() {
+        if (mHeroListDialog != null) {
+            if (mHeroListDialog.isShowing()) {
+                mHeroListDialog.dismiss();
+            }
+            mHeroListDialog = null;
+        }
+
+        List<Integer> heroes = mGameCore.getSelf().heroes;
+        if (heroes.size() > 0) {
+            final HeroListAdapter adapter = new HeroListAdapter(heroes);
+            mHeroListDialog = new AlertDialog.Builder(this).setAdapter(adapter, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    final Hero hero = adapter.getItem(which);
+                    ImageView iv = new ImageView(GameActivity.this);
+                    iv.setImageResource(R.drawable.daqiao);
+                    (new AlertDialog.Builder(GameActivity.this))
+                            .setView(new HeroView(GameActivity.this, hero.id))
+                            .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mGameCore.selectHero(hero.id);
+                                }
+                            })
+                            .setNegativeButton("取　消", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mHeroListDialog.show();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    mHeroListDialog.show();
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+            }).create();
+        } else {
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage("正在等待主公选武将...");
+            mHeroListDialog = dialog;
+        }
+        mHeroListDialog.setCancelable(false);
+        mHeroListDialog.setCanceledOnTouchOutside(false);
+        mHeroListDialog.show();
     }
 
     @Override
@@ -85,8 +152,6 @@ public class GameActivity extends BaseActivity {
                 }
             }
         }
-
-        showSlectHeroDialog();
     }
 
     private void updateOthers() {
@@ -105,33 +170,6 @@ public class GameActivity extends BaseActivity {
         }
 
         mDeskCard = (DeskCardView) findViewById(R.id.desk_card);
-    }
-
-    private void showSlectHeroDialog() {
-
-        mSelecHeroDialog = new Dialog(this,
-                android.R.style.Theme_Light_Panel);
-        shadow(mSelecHeroDialog);
-        mSelcetHeroContaner = new SelectHeroView(this);
-        mSelcetHeroContaner.setHeros(GameCore.getInstance().getSelf().heroes);
-        mSelecHeroDialog.getWindow().setContentView(
-                mSelcetHeroContaner);
-        mSelecHeroDialog.show();
-        mSelecHeroDialog.setCancelable(false);
-        mSelecHeroDialog.setCanceledOnTouchOutside(false);
-
-    }
-
-    /**
-     * 设置阴影
-     * 
-     * @param dialog
-     */
-    private void shadow(Dialog dialog) {
-        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        lp.dimAmount = 0.3f;
-        dialog.getWindow().setAttributes(lp);
     }
 
     private final GameListener mGameListener = new GameListener() {
@@ -158,31 +196,27 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onHeroList(List<Integer> heroes) {
-            if (!mSelecHeroDialog.isShowing()) {
-                mSelcetHeroContaner.setHeros(heroes);
-                mSelecHeroDialog.show();
-            }
+            showHeroList();
         }
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
-            if (getDefaultSharedPreferences().getString("nickName", "").trim().equals(player.name)) {
-                showToast("您选择的英雄是:" + Hero.valueOf(hero).name);
-            } else {
-                // 主公才收到通知
-                if (player.isLord()) {
-                    showToast(player.name + "选择的英雄是:" + Hero.valueOf(hero).name);
+            int heroSelectedCount = 0;
+            for (Player p : mGameCore.getPlayers()) {
+                if (p.hero != Hero.UNKNOWN) {
+                    heroSelectedCount++;
                 }
             }
+            if (heroSelectedCount == mGameCore.getPlayers().size()) {
+                // TODO: 显示所有武将信息
+            } else {
+                // TODO: 仅显示主公信息
+            }
             if (player == GameCore.getInstance().getSelf()) {
+                mSelfWidget.updateRole();
                 mSelfWidget.updateSkills();
+                mSelfWidget.updateHp();
             }
-
-            if (mSelecHeroDialog.isShowing()) {
-                mSelecHeroDialog.dismiss();
-            }
-
-            updateOthers();
         }
 
         @Override
@@ -202,7 +236,7 @@ public class GameActivity extends BaseActivity {
             if (player == GameCore.getInstance().getSelf()) {
                 mSelfWidget.updateHp();
             } else {
-                // TODO 其他人掉血的逻辑
+                updateOthers();
             }
         }
 

@@ -35,6 +35,33 @@ public class Role {
         }
     }
 
+    public static String getName(int role) {
+        String name = "";
+
+        switch (role) {
+        case Role.LORD:
+            name = "主公";
+            break;
+
+        case Role.LOYALIST:
+            name = "忠臣";
+            break;
+
+        case Role.REBEL:
+            name = "反贼";
+            break;
+
+        case Role.TRAITOR:
+            name = "内奸";
+            break;
+
+        default:
+            break;
+        }
+
+        return name;
+    }
+
     private static void add(List<Integer> list, int role, int count) {
         for (int i = 0; i < count; i++) {
             list.add(role);
@@ -54,7 +81,7 @@ public class Role {
 
     static {
         ROLE_MAP = new SparseArray<List<Integer>>();
-        //TODO 测试完成之后删除 2个玩家的情况
+        // TODO 测试完成之后删除 2个玩家的情况
         add(ROLE_MAP, 0, 0, 1); // 2
         add(ROLE_MAP, 1, 1, 1); // 4
         add(ROLE_MAP, 1, 2, 1); // 5
