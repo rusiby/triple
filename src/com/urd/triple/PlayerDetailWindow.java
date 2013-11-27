@@ -115,6 +115,9 @@ public class PlayerDetailWindow {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlayerInfoAdapter adapter = (PlayerInfoAdapter) parent.getAdapter();
+                Item item = adapter.getItem(position);
+                showCardDetailWindow(item.getCard());
                 dismiss();
             }
         });
@@ -124,6 +127,11 @@ public class PlayerDetailWindow {
 
         // mWindow.showAsDropDown(mAnchor);
         mWindow.showAtLocation(mParent, Gravity.CENTER, 0, 0);
+    }
+
+    private void showCardDetailWindow(Card card) {
+        CardDetailWindow window = new CardDetailWindow(mContext, card, mPlayer);
+        window.show();
     }
 
     protected void preShow() {

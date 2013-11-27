@@ -84,6 +84,7 @@ public class SelfWidget extends RelativeLayout {
         mhandCardsArea.setOnItemClickListener(mOnCardClickListener);
         mEquipList = (ListView) findViewById(R.id.equipment_list);
         mEquipList.setAdapter(new EquipAdapter());
+        mEquipList.setOnItemClickListener(mEquipItemClick);
 
         mJudgeHappy = (TextView) findViewById(R.id.happy);
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
@@ -226,6 +227,16 @@ public class SelfWidget extends RelativeLayout {
         return null;
     }
 
+    private void showCardDetailWindow(Card card) {
+        CardDetailWindow window = new CardDetailWindow(getContext(), card, mPlayer);
+        window.show();
+    }
+
+    private void showPlayerDetailWindow() {
+        PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
+        window.show();
+    }
+
     private final OnClickListener mGetCardListener = new OnClickListener() {
 
         @Override
@@ -302,13 +313,15 @@ public class SelfWidget extends RelativeLayout {
         }
     };
 
-    private void showCardDetailWindow(Card card) {
-        CardDetailWindow window = new CardDetailWindow(getContext(), card, mPlayer);
-        window.show();
-    }
+    private OnItemClickListener mEquipItemClick = new OnItemClickListener() {
 
-    private void showPlayerDetailWindow() {
-        PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
-        window.show();
-    }
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            EquipAdapter adapter = (EquipAdapter) parent.getAdapter();
+            Card card = adapter.getItem(position);
+
+            showCardDetailWindow(card);
+        }
+    };
+
 }
