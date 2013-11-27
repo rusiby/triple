@@ -174,8 +174,10 @@ public class GameCore {
 
             mServer = null;
         }
-        mGameProxy.clear();
-        mGameProxy = null;
+        if (mGameProxy != null) {
+            mGameProxy.clear();
+            mGameProxy = null;
+        }
         mPlayerMananger.clear();
     }
 
