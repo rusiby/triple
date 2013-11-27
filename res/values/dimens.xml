@@ -10,5 +10,6 @@
     <dimen name="contanier_height">120dp</dimen>
     <dimen name="tv_tb_padding">2dp</dimen>
     <dimen name="self_contanier_width">200dp</dimen>
+    <dimen name="pupup_menu_width">500dp</dimen>
 
 </resources>

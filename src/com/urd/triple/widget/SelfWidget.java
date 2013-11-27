@@ -3,6 +3,7 @@ package com.urd.triple.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.urd.triple.PlayerDetailWindow;
 import com.urd.triple.R;
 import com.urd.triple.adapter.EquipAdapter;
 import com.urd.triple.core.Card;
@@ -67,6 +69,7 @@ public class SelfWidget extends RelativeLayout {
     private void setupViews() {
         mRole = (TextView) findViewById(R.id.role);
         mAvator = (ImageView) findViewById(R.id.avator);
+        mAvator.setOnClickListener(mAvatorClickListener);
         mGetCard = (Button) findViewById(R.id.get_card);
         mGetCard.setOnClickListener(mGetCardListener);
         mHp = (TextView) findViewById(R.id.hp);
@@ -83,7 +86,9 @@ public class SelfWidget extends RelativeLayout {
         mJudgeThunder = (TextView) findViewById(R.id.thunder);
         mClear = (Button) findViewById(R.id.clear);
         mClear.setOnClickListener(onClearDeskListener);
+        mShowRole = (Button) findViewById(R.id.show_indentity);
         mShowRole.setOnClickListener(onShowRoleClickListener);
+        mToDesk = (Button) findViewById(R.id.to_desk);
         mToDesk.setOnClickListener(mGetCardListener);
     }
 
@@ -274,4 +279,17 @@ public class SelfWidget extends RelativeLayout {
             GameCore.getInstance().changeHP(hp);
         }
     };
+
+    private OnClickListener mAvatorClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            showPlayerDetailWindow();
+        }
+    };
+
+    private void showPlayerDetailWindow() {
+        PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
+        window.show();
+    }
 }
