@@ -37,8 +37,8 @@ public class CommandFactory {
         COMMAND_MAP.append(SelectHeroNotify.ID, SelectHeroNotify.class);
         COMMAND_MAP.append(CardActionReq.ID, CardActionReq.class);
         COMMAND_MAP.append(CardActionNotify.ID, CardActionNotify.class);
-        COMMAND_MAP.append(CleanDeskReq.ID, CardActionNotify.class);
-        COMMAND_MAP.append(CleanDeskNotify.ID, CardActionNotify.class);
+        COMMAND_MAP.append(CleanDeskReq.ID, CleanDeskReq.class);
+        COMMAND_MAP.append(CleanDeskNotify.ID, CleanDeskNotify.class);
         COMMAND_MAP.append(ChangeHPNotify.ID, ChangeHPNotify.class);
         COMMAND_MAP.append(RoleNotify.ID, RoleNotify.class);
     }
