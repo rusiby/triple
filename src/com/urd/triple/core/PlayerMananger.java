@@ -35,8 +35,8 @@ public class PlayerMananger {
         return add(new Player(id, name));
     }
 
-    public Player add(GameSocket socket, String name) {
-        Player player = add(socket.getID(), name);
+    public Player add(GameSocket socket, String id, String name) {
+        Player player = add(id, name);
         player.socket = socket;
 
         return player;
@@ -56,8 +56,13 @@ public class PlayerMananger {
         return player;
     }
 
-    public Player remove(GameSocket socket) {
-        return remove(socket.getID());
+    public Collection<Player> remove(GameSocket socket) {
+        Collection<Player> players = get(socket);
+        for (Player player : players) {
+            remove(player);
+        }
+
+        return players;
     }
 
     public void clear() {
@@ -69,16 +74,19 @@ public class PlayerMananger {
         return mPlayerMap.get(id);
     }
 
-    public Player get(GameSocket socket) {
-        return get(socket.getID());
+    public Collection<Player> get(GameSocket socket) {
+        List<Player> players = new ArrayList<Player>();
+        for (Player player : mPlayers) {
+            if (player.socket == socket) {
+                players.add(player);
+            }
+        }
+
+        return players;
     }
 
     public boolean contains(String id) {
         return mPlayerMap.containsKey(id);
-    }
-
-    public boolean contains(GameSocket socket) {
-        return contains(socket.getID());
     }
 
     public List<Player> getPlayers() {

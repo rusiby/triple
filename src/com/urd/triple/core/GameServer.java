@@ -2,6 +2,7 @@ package com.urd.triple.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,48 +113,53 @@ public class GameServer implements GameSocketListener {
     public void onSocketCommand(GameSocket socket, Command command) {
         LOG.debug("recv command. from={} command={}", socket.getName(), command);
 
-        command.src = socket.getID();
+        // 当命令经过路由时 src != null
+        if (command.src == null) {
+            command.src = socket.getID();
+        }
         switch (command.getID()) {
         case LoginReq.ID:
-            if (!mPlaying && !(mPlayerMananger.contains(socket))) {
-                Player player = mPlayerMananger.add(socket, ((LoginReq) command).name);
+            if (!mPlaying && !(mPlayerMananger.contains(command.src))) {
+                Player player = mPlayerMananger.add(socket, command.src, ((LoginReq) command).name);
                 LOG.info("playe login. player={}", player);
 
-                sendTo(new LoginResp(0, mPlayerMananger.getPlayers()), player);
+                sendTo(new LoginResp(0, new ArrayList<Player>(mPlayerMananger.getPlayers())), player);
                 broadcastExcept(new LoginNotify(player), player);
             } else {
                 LOG.warn("invalid command. close socket. command={}", command);
-
-                socket.close();
             }
+            break;
+
+        case LogoutNotify.ID:
+            onLogoutNotify((LogoutNotify) command);
             break;
 
         case StartGameReq.ID:
             if (!mPlaying) {
-                onStartGameReq(mPlayerMananger.get(socket));
+                onStartGameReq(mPlayerMananger.get(command.src));
             } else {
                 LOG.warn("invalid command. command={}", command);
             }
             break;
 
         case SelectHeroNotify.ID:
-            onSelectHeroNotify(mPlayerMananger.get(socket), (SelectHeroNotify) command);
+            onSelectHeroNotify(mPlayerMananger.get(command.src), (SelectHeroNotify) command);
             break;
 
         case CardActionReq.ID:
-            onCardActionReq(mPlayerMananger.get(socket), (CardActionReq) command);
+            onCardActionReq(mPlayerMananger.get(command.src), (CardActionReq) command);
             break;
 
         case CleanDeskReq.ID:
-            onCleanDeskReq(mPlayerMananger.get(socket));
+            onCleanDeskReq(mPlayerMananger.get(command.src));
             break;
 
         case ChangeHPNotify.ID:
-            onChangeHPNotify(mPlayerMananger.get(socket), (ChangeHPNotify) command);
+            onChangeHPNotify(mPlayerMananger.get(command.src), (ChangeHPNotify) command);
             break;
 
         case RoleNotify.ID:
-            onRoleNotify(mPlayerMananger.get(socket), (RoleNotify) command);
+            onRoleNotify(mPlayerMananger.get(command.src), (RoleNotify) command);
             break;
 
         default:
@@ -167,11 +173,20 @@ public class GameServer implements GameSocketListener {
         LOG.warn("{} socket error. remove it.", socket.getName());
 
         mClients.remove(socket);
-        Player player = mPlayerMananger.remove(socket);
-        if (player != null) {
-            broadcast(new LogoutNotify(socket.getID()));
+        Collection<Player> players = mPlayerMananger.remove(socket);
+        for (Player player : players) {
+            broadcast(new LogoutNotify(player.id));
         }
         socket.close();
+    }
+
+    private void onLogoutNotify(LogoutNotify notify) {
+        Player player = mPlayerMananger.remove(notify.id);
+        if (player != null) {
+            LOG.info("{} logout.", player.name);
+
+            broadcast(notify);
+        }
     }
 
     private void onStartGameReq(Player player) {
@@ -211,7 +226,7 @@ public class GameServer implements GameSocketListener {
     }
 
     private void onSelectHeroNotify(Player player, SelectHeroNotify notify) {
-        LOG.info("{} select hero {}.", player.name, notify.hero);
+        LOG.info("{} select hero {}.", player.name, Hero.valueOf(notify.hero).name);
 
         broadcast(notify);
 
@@ -274,7 +289,11 @@ public class GameServer implements GameSocketListener {
         LOG.debug("broadcast command. command={}", command);
 
         for (Player p : mPlayerMananger.getPlayers()) {
-            internalSendTo(p, command);
+            try {
+                internalSendTo(p, command.clone());
+            } catch (CloneNotSupportedException e) {
+                LOG.warn("clone failed.", e);
+            }
         }
 
         if (mGameProxy != null) {
@@ -287,7 +306,11 @@ public class GameServer implements GameSocketListener {
 
         for (Player p : mPlayerMananger.getPlayers()) {
             if (p != player) {
-                internalSendTo(p, command);
+                try {
+                    internalSendTo(p, command.clone());
+                } catch (CloneNotSupportedException e) {
+                    LOG.warn("clone failed.", e);
+                }
             }
         }
 

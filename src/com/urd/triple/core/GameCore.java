@@ -40,6 +40,7 @@ public class GameCore {
     private PlayerMananger mPlayerMananger;
     private GameProxy mGameProxy;
     private GameServer mServer;
+    private GameRouter mRouter;
     private GameSocket mClient;
     private Set<GameListener> mListeners;
 
@@ -109,8 +110,11 @@ public class GameCore {
     }
 
     public void connect(UUID uuid, BluetoothDevice device) {
-        BluetoothGameSocket socket = new BluetoothGameSocket(mSocketListener, uuid);
-        socket.connect(device);
+        mRouter = new GameRouter(uuid);
+        mRouter.start(device);
+
+        LocalGameSocket socket = new LocalGameSocket(mSocketListener, null);
+        mRouter.connectLocalSocket(socket);
         mClient = socket;
     }
 
@@ -170,6 +174,11 @@ public class GameCore {
         if (mClient != null) {
             mClient.close();
             mClient = null;
+        }
+        if (mRouter != null) {
+            mRouter.stop();
+
+            mRouter = null;
         }
         if (mServer != null) {
             mServer.stop();

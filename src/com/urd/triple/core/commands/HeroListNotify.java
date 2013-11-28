@@ -10,4 +10,13 @@ public class HeroListNotify extends Command {
     public HeroListNotify(List<Integer> heroes) {
         this.heroes = heroes;
     }
+
+    @Override
+    public HeroListNotify clone() throws CloneNotSupportedException {
+        HeroListNotify command = new HeroListNotify(heroes);
+        command.src = src;
+        command.dst__ = dst__;
+
+        return command;
+    }
 }

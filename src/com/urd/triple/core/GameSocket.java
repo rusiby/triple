@@ -47,7 +47,7 @@ public abstract class GameSocket {
         LOG.debug("send command. command={}", command);
 
         mCommands.add(command);
-        if (mSendTask == null) {
+        if (isConnected() && mSendTask == null) {
             send();
         }
     }
@@ -81,6 +81,8 @@ public abstract class GameSocket {
 
         mRecvThread = new RecvThread();
         mRecvThread.start();
+
+        send();
     }
 
     protected void stop() {

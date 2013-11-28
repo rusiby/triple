@@ -27,6 +27,15 @@ public class Command {
         return commandID;
     }
 
+    @Override
+    public Command clone() throws CloneNotSupportedException {
+        Command command = new Command();
+        command.src = src;
+        command.dst__ = dst__;
+
+        return command;
+    }
+
     public String toString() {
         Gson gson = new Gson();
 

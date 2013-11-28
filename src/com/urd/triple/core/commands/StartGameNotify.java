@@ -10,4 +10,13 @@ public class StartGameNotify extends Command {
         this.role = role;
         this.lordID = lordID;
     }
+
+    @Override
+    public StartGameNotify clone() throws CloneNotSupportedException {
+        StartGameNotify command = new StartGameNotify(role, lordID);
+        command.src = src;
+        command.dst__ = dst__;
+
+        return command;
+    }
 }
