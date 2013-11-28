@@ -276,7 +276,7 @@ public class CardDetailWindow {
             }
 
             Player player = getItem(position);
-            String title = getItem(position).name;
+            String title = getItem(position).getFullname();
             if (GameCore.getInstance().getSelf() == player) {
                 title = "[我自己]";
             }

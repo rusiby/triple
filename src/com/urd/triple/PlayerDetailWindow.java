@@ -266,7 +266,8 @@ public class PlayerDetailWindow {
                 paddingLeft = 20;
             }
 
-            holder.title.setPadding(paddingLeft, 0, 0, 0);
+            int padding = parent.getContext().getResources().getDimensionPixelSize(R.dimen.item_vertical_margin);
+            holder.title.setPadding(paddingLeft, padding, 0, padding);
 
             return convertView;
         }
