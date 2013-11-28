@@ -211,7 +211,7 @@ public class PlayerDetailWindow {
 
         @Override
         public boolean isEnabled(int position) {
-            return position == 0 || items.get(position).getCard() != null;
+            return !(position == 0 || items.get(position).getCard() == null);
         }
 
         @Override
