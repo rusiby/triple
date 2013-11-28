@@ -45,8 +45,6 @@ public class CardDetailWindow {
 
                 @Override
                 public void doAction() {
-                    Toast.makeText(mContext, "出牌", Toast.LENGTH_SHORT).show();
-
                     GameCore.getInstance().doCardAction(mCard, Card.AREA_DESK, mPlayer);
                 }
             }));
