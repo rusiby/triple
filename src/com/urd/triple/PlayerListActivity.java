@@ -33,7 +33,6 @@ public class PlayerListActivity extends ListActivity {
         super.onDestroy();
 
         GameCore.getInstance().unregisterListener(mGameListener);
-        GameCore.getInstance().close();
     }
 
     @Override
@@ -61,7 +60,16 @@ public class PlayerListActivity extends ListActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        GameCore.getInstance().close();
+    }
+
     private void goToGameActivity() {
+        finish();
+
         Intent intent = new Intent();
         GameActivity.launch(this, intent);
     }
@@ -85,7 +93,7 @@ public class PlayerListActivity extends ListActivity {
         @Override
         public void onPlayerLogin(Player player) {
             mAdapter.update();
-            showToast(player.name+"加入了游戏，大家欢迎！");
+            showToast(player.name + "加入了游戏，大家欢迎！");
         }
 
         @Override
@@ -128,6 +136,9 @@ public class PlayerListActivity extends ListActivity {
         @Override
         public void onNetworkError() {
             showToast("网络错误.");
+
+            GameCore.getInstance().close();
+            finish();
         }
     };
 }

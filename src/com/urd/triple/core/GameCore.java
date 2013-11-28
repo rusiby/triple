@@ -209,6 +209,10 @@ public class GameCore {
         return mServer == null && mClient == null;
     }
 
+    public boolean isAllPlayerHeroSelected() {
+        return mPlayerMananger.isAllPlayerHeroSelected();
+    }
+
     private GameCore() {
         mPlayerMananger = new PlayerMananger();
         mListeners = new HashSet<GameCore.GameListener>();

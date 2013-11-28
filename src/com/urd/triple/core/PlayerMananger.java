@@ -85,6 +85,17 @@ public class PlayerMananger {
         return mPlayers;
     }
 
+    public boolean isAllPlayerHeroSelected() {
+        int heroSelectedCount = 0;
+        for (Player p : mPlayers) {
+            if (p.hero != Hero.UNKNOWN) {
+                heroSelectedCount++;
+            }
+        }
+
+        return heroSelectedCount > 0 && heroSelectedCount == mPlayers.size();
+    }
+
     public int size() {
         return mPlayers.size();
     }

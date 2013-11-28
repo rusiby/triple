@@ -54,64 +54,113 @@ public class GameActivity extends BaseActivity {
 
         setupViews();
 
-        if (mGameCore.getSelf().hero == Hero.UNKNOWN) {
+        if (!(mGameCore.isAllPlayerHeroSelected())) {
             showHeroList();
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("是否退出游戏?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        mGameCore.close();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .create()
+                .show();
+    }
+
     private void showHeroList() {
+        Player self = mGameCore.getSelf();
+        if (self.hero == Hero.UNKNOWN) {
+            List<Integer> heroes = self.heroes;
+            if (heroes.size() > 0) {
+                showHeroListDialog(heroes);
+            } else {
+                showHeroProgressDialog("正在等待主公选武将...");
+            }
+        } else {
+            showHeroProgressDialog("正在等待其他玩家选武将...");
+        }
+    }
+
+    private void hideHeroList() {
         if (mHeroListDialog != null) {
             if (mHeroListDialog.isShowing()) {
                 mHeroListDialog.dismiss();
             }
             mHeroListDialog = null;
         }
+    }
 
-        List<Integer> heroes = mGameCore.getSelf().heroes;
-        if (heroes.size() > 0) {
-            final HeroListAdapter adapter = new HeroListAdapter(heroes);
-            mHeroListDialog = new AlertDialog.Builder(this).setAdapter(adapter, new DialogInterface.OnClickListener() {
+    private void showHeroListDialog(Collection<Integer> heroes) {
+        hideHeroList();
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final Hero hero = adapter.getItem(which);
-                    ImageView iv = new ImageView(GameActivity.this);
-                    iv.setImageResource(R.drawable.daqiao);
-                    (new AlertDialog.Builder(GameActivity.this))
-                            .setView(new HeroView(GameActivity.this, hero.id))
-                            .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
+        final HeroListAdapter adapter = new HeroListAdapter(heroes);
+        mHeroListDialog = new AlertDialog.Builder(this).setAdapter(adapter,
+                new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mGameCore.selectHero(hero.id);
-                                }
-                            })
-                            .setNegativeButton("取　消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final Hero hero = adapter.getItem(which);
+                        ImageView iv = new ImageView(GameActivity.this);
+                        iv.setImageResource(R.drawable.daqiao);
+                        (new AlertDialog.Builder(GameActivity.this))
+                                .setView(new HeroView(GameActivity.this, hero.id))
+                                .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mHeroListDialog.show();
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mGameCore.selectHero(hero.id);
+                                    }
+                                })
+                                .setNegativeButton("取　消", new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    mHeroListDialog.show();
-                                }
-                            })
-                            .create()
-                            .show();
-                }
-            }).create();
-        } else {
-            ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setMessage("正在等待主公选武将...");
-            mHeroListDialog = dialog;
-        }
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mHeroListDialog.show();
+                                    }
+                                })
+                                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        mHeroListDialog.show();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    }
+                }).create();
         mHeroListDialog.setCancelable(false);
         mHeroListDialog.setCanceledOnTouchOutside(false);
         mHeroListDialog.show();
+    }
+
+    private void showHeroProgressDialog(String msg) {
+        if (mHeroListDialog != null) {
+            if (mHeroListDialog instanceof ProgressDialog) {
+                ((ProgressDialog) mHeroListDialog).setMessage(msg);
+            } else {
+                hideHeroList();
+            }
+        }
+        if (mHeroListDialog == null) {
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage(msg);
+            mHeroListDialog = dialog;
+            mHeroListDialog.setCancelable(false);
+            mHeroListDialog.setCanceledOnTouchOutside(false);
+        }
+        if (!(mHeroListDialog.isShowing())) {
+            mHeroListDialog.show();
+        }
     }
 
     @Override
@@ -197,26 +246,24 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
-            LOG.debug("on player hero selected");
+            LOG.debug("player {} select {}", player.name, Hero.valueOf(hero).name);
 
-            int heroSelectedCount = 0;
-            for (Player p : mGameCore.getPlayers()) {
-                if (p.hero != Hero.UNKNOWN) {
-                    heroSelectedCount++;
-                }
+            if (player.isLord() && player != mGameCore.getSelf()) {
+                showToast("主公(%s)选择了 %s", player.name, Hero.valueOf(hero).name);
             }
-            if (heroSelectedCount == mGameCore.getPlayers().size()) {
-                // TODO: 显示所有武将信息
+
+            if (mGameCore.isAllPlayerHeroSelected()) {
+                hideHeroList();
             } else {
-                // TODO: 仅显示主公信息
+                showHeroList();
             }
             if (player == GameCore.getInstance().getSelf()) {
                 mSelfWidget.updateRole();
                 mSelfWidget.updateSkills();
                 mSelfWidget.updateHp();
-            } else {
-                updateOthers();
             }
+
+            updateOthers();
         }
 
         @Override
@@ -251,7 +298,9 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onNetworkError() {
+            mGameCore.close();
+
+            finish();
         }
     };
-
 }

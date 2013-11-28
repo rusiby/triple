@@ -17,6 +17,7 @@ import com.urd.triple.PlayerDetailWindow;
 import com.urd.triple.R;
 import com.urd.triple.adapter.OthersEquipAdapter;
 import com.urd.triple.core.Card;
+import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
 import com.urd.triple.core.Role;
@@ -205,10 +206,9 @@ public class OthersWidget extends RelativeLayout {
             break;
         }
 
-        Hero hero = Hero.valueOf(mPlayer.hero);
         String heroName = "";
-        if (hero != null) {
-            heroName = hero.name;
+        if (mPlayer.isLord() && mPlayer.hero != Hero.UNKNOWN || GameCore.getInstance().isAllPlayerHeroSelected()) {
+            heroName = Hero.valueOf(mPlayer.hero).name;
         }
         String identity = String.format("%1$s %2$s %3$s", mPlayer.name, roleName, heroName);
         mIdentity.setText(identity);
@@ -216,9 +216,8 @@ public class OthersWidget extends RelativeLayout {
 
     private void updateSkills() {
         String skills = "";
-        Hero hero = Hero.valueOf(mPlayer.hero);
-        if (hero != null) {
-            skills = StringUtils.join(hero.skills, ",");
+        if (mPlayer.isLord() && mPlayer.hero != Hero.UNKNOWN || GameCore.getInstance().isAllPlayerHeroSelected()) {
+            skills = StringUtils.join(Hero.valueOf(mPlayer.hero).skills, ",");
         }
         mSkill.setText(skills);
     }
