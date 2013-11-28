@@ -280,63 +280,61 @@ public class GameActivity extends BaseActivity {
             updateOthers();
             mDeskCard.updateViews(dst);
 
-            if (src != GameCore.getInstance().getSelf()) {
-                switch (srcArea) {
-                case Card.AREA_DECK:
-                    if (dstArea == Card.AREA_DESK) {
-                        showToast("%s 摸了张 %s 并放到桌上", src.getFullname(), card.detail.name);
-                    } else {
-                        showToast("%s 摸了张牌", src.getFullname());
-                    }
+            switch (srcArea) {
+            case Card.AREA_DECK:
+                if (dstArea == Card.AREA_DESK) {
+                    showToast("%s 摸了张 %s 并放到桌上", src.getFullname(), card.detail.name);
+                } else {
+                    showToast("%s 摸了张牌", src.getFullname());
+                }
+                break;
+
+            case Card.AREA_DESK:
+                showToast("%s 从桌上拿了张 %s", src.getFullname(), card.detail.name);
+                break;
+
+            case Card.AREA_EQUIP:
+            case Card.AREA_JUDGE:
+            case Card.AREA_HAND:
+                switch (dstArea) {
+                case Card.AREA_DECK_TOP:
+                    showToast("%s 放了张牌到牌堆顶", src.getFullname());
+                    break;
+
+                case Card.AREA_DECK_BOTTOM:
+                    showToast("%s 放了张牌到牌堆底", src.getFullname());
                     break;
 
                 case Card.AREA_DESK:
-                    showToast("%s 从桌上拿了张 %s", src.getFullname(), card.detail.name);
+                    showToast("%s 将一张 %s 丢到桌面", src.getFullname(), card.detail.name);
                     break;
 
                 case Card.AREA_EQUIP:
                 case Card.AREA_JUDGE:
                 case Card.AREA_HAND:
-                    switch (dstArea) {
-                    case Card.AREA_DECK_TOP:
-                        showToast("%s 放了张牌到牌堆顶", src.getFullname());
-                        break;
-
-                    case Card.AREA_DECK_BOTTOM:
-                        showToast("%s 放了张牌到牌堆底", src.getFullname());
-                        break;
-
-                    case Card.AREA_DESK:
-                        showToast("%s 将一张 %s 丢到桌面", src.getFullname(), card.detail.name);
-                        break;
-
-                    case Card.AREA_EQUIP:
-                    case Card.AREA_JUDGE:
-                    case Card.AREA_HAND:
-                        String cardName = "牌";
-                        if (srcArea != Card.AREA_HAND || dstArea != Card.AREA_HAND) {
-                            cardName = " " + card.detail.name + " ";
-                        }
-                        String target = dst.getFullname();
-                        if (dst == src) {
-                            target = "自己";
-                        }
-                        showToast("%s 将一张%s从 %s 移到 %s. 目标: %s",
-                                src.getFullname(),
-                                cardName,
-                                Card.getAreaName(srcArea),
-                                Card.getAreaName(dstArea),
-                                target);
-                        break;
-
-                    default:
-                        break;
+                    String cardName = "牌";
+                    if (srcArea != Card.AREA_HAND || dstArea != Card.AREA_HAND) {
+                        cardName = " " + card.detail.name + " ";
                     }
+                    String target = dst.getFullname();
+                    if (dst == src) {
+                        target = "自己";
+                    }
+                    showToast("%s 将一张%s从 %s 移到 %s. 目标: %s",
+                            src.getFullname(),
+                            cardName,
+                            Card.getAreaName(srcArea),
+                            Card.getAreaName(dstArea),
+                            target);
                     break;
 
                 default:
                     break;
                 }
+                break;
+
+            default:
+                break;
             }
         }
 
@@ -350,10 +348,10 @@ public class GameActivity extends BaseActivity {
             if (player == GameCore.getInstance().getSelf()) {
                 mSelfWidget.updateHp();
             } else {
-                showToast("%s 更新了血量为 %d", player.getFullname(), player.hp);
-
                 updateOthers();
             }
+
+            showToast("%s 更新了血量为 %d", player.getFullname(), player.hp);
         }
 
         @Override
@@ -361,10 +359,10 @@ public class GameActivity extends BaseActivity {
             LOG.debug("on player role");
 
             if (player != GameCore.getInstance().getSelf()) {
-                showToast("%s 亮出了身份 %s", player.getFullname(), Role.getName(player.role));
-
                 updateOthers();
             }
+
+            showToast("%s 亮出了身份 %s", player.getFullname(), Role.getName(player.role));
         }
 
         @Override

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 public class BaseActivity extends Activity {
     private static Toast sToast = null;
+    private static String sToastMessage = null;
     private static SharedPreferences sPrefs = null;
 
     protected void startActivity(Class<?> cls) {
@@ -20,8 +21,12 @@ public class BaseActivity extends Activity {
         if (sToast == null) {
             sToast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
         } else {
+            if (sToast.getView().isShown()) {
+                msg = sToastMessage + "\n" + msg;
+            }
             sToast.setText(msg);
         }
+        sToastMessage = msg;
         sToast.show();
     }
 
