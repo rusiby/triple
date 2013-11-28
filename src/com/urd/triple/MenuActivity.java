@@ -11,8 +11,8 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -143,7 +143,7 @@ public class MenuActivity extends BaseActivity {
     public static void share(Context context, String shareMsg, String activityTitle, String filePath)
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("application/vnd.android.package-archive");
+        intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_SUBJECT, activityTitle);
         intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
