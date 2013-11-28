@@ -15,7 +15,6 @@ public class Hero {
     public int id;
     public String name;
     public String pic;
-    public String shortName;
     public String portraitPic;
     public List<String> skills;
 
@@ -74,8 +73,6 @@ public class Hero {
         h.id = hero;
         h.name = name;
         h.pic = String.format(Locale.US, "2%02d.png", hero % 100);
-        int endIndex = name.length() > 2 ? 2 : name.length();
-        h.shortName = name.substring(0, endIndex);
         h.portraitPic = String.format(Locale.US, "3%02d.jpg", hero % 100);
         h.skills = new ArrayList<String>();
         h.skills.add(skill1);
