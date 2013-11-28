@@ -64,11 +64,20 @@ public class DeskCardView extends RelativeLayout implements OnItemClickListener 
     }
 
     private void showOption(final Card card) {
-        final String[] array = new String[] { "拿走" };
+        final String[] array = new String[] { "拿走", "详情" };
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setItems(array, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                GameCore.getInstance().doCardAction(card, Card.AREA_HAND, mPlayer);
+                if (which == 0) {
+                    GameCore.getInstance().doCardAction(card, Card.AREA_HAND, mPlayer);
+                } else {
+                    AlertDialog detail = new AlertDialog.Builder(getContext())
+                            .setView(new HeroView(getContext(), card.id))
+                            .setCancelable(true)
+                            .create();
+                    detail.setCanceledOnTouchOutside(true);
+                    detail.show();
+                }
             }
         }).create().show();
     }

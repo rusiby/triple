@@ -110,8 +110,6 @@ public class GameActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final Hero hero = adapter.getItem(which);
-                        ImageView iv = new ImageView(GameActivity.this);
-                        iv.setImageResource(R.drawable.daqiao);
                         (new AlertDialog.Builder(GameActivity.this))
                                 .setView(new HeroView(GameActivity.this, hero.id))
                                 .setPositiveButton("确　定", new DialogInterface.OnClickListener() {

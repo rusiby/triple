@@ -2,7 +2,7 @@
 <resources>
 
     <!-- values-w400dp-land -->
-    <dimen name="card_width">71dp</dimen>
-    <dimen name="card_height">100dp</dimen>
+    <dimen name="card_width">75dp</dimen>
+    <dimen name="card_height">105dp</dimen>
 
 </resources>
