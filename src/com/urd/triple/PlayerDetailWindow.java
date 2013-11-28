@@ -3,7 +3,9 @@ package com.urd.triple;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import com.urd.triple.core.Card;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
+import com.urd.triple.widget.HeroView;
 
 public class PlayerDetailWindow {
     private View mRoot;
@@ -115,9 +118,13 @@ public class PlayerDetailWindow {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PlayerInfoAdapter adapter = (PlayerInfoAdapter) parent.getAdapter();
-                Item item = adapter.getItem(position);
-                showCardDetailWindow(item.getCard());
+                if (position == 0) {
+                    showHeroDetailWindow(mPlayer);
+                } else {
+                    PlayerInfoAdapter adapter = (PlayerInfoAdapter) parent.getAdapter();
+                    Item item = adapter.getItem(position);
+                    showCardDetailWindow(item.getCard());
+                }
                 dismiss();
             }
         });
@@ -127,6 +134,15 @@ public class PlayerDetailWindow {
 
         // mWindow.showAsDropDown(mAnchor);
         mWindow.showAtLocation(mParent, Gravity.CENTER, 0, 0);
+    }
+
+    protected void showHeroDetailWindow(Player player) {
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setView(new HeroView(mContext, player.hero))
+                .create();
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     private void showCardDetailWindow(Card card) {
@@ -211,7 +227,7 @@ public class PlayerDetailWindow {
 
         @Override
         public boolean isEnabled(int position) {
-            return !(position == 0 || items.get(position).getCard() == null);
+            return position == 0 || items.get(position).getCard() != null;
         }
 
         @Override
