@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Player;
+import com.urd.triple.widget.HeroView;
 
 public class CardDetailWindow {
     private Context mContext;
@@ -127,7 +128,10 @@ public class CardDetailWindow {
 
             @Override
             public void doAction() {
-                // TODO 展示牌的详细
+                new AlertDialog.Builder(mContext)
+                        .setView(new HeroView(mContext, mCard.id))
+                        .create()
+                        .show();
             }
         }));
     }
