@@ -2,5 +2,7 @@
 
     <color name="others_item_normal">#cdcdcd</color>
     <color name="others_item_focus">#ee5624</color>
+    <color name="item_group">#000000</color>
+    <color name="item">#ffffff</color>
 
 </resources>

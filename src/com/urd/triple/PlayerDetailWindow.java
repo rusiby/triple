@@ -1,11 +1,13 @@
 package com.urd.triple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -80,7 +82,9 @@ public class PlayerDetailWindow {
             card = cards.get(i);
             switch (card.area) {
             case Card.AREA_HAND:
-                handCards.add(card);
+                Card temp = new Card(card.id, card.area);
+                handCards.add(temp);
+                Collections.shuffle(handCards);
                 break;
 
             case Card.AREA_EQUIP:
@@ -96,20 +100,14 @@ public class PlayerDetailWindow {
         }
         mAdapter.addItem(new Item(skills, null));
 
-        if (handCards != null) {
-            mAdapter.addItem(new Item("手牌", null));
-            mAdapter.addItems(handCards);
-        }
+        mAdapter.addItem(new Item("手牌", null));
+        mAdapter.addItems(handCards);
 
-        if (equipCards != null) {
-            mAdapter.addItem(new Item("装备", null));
-            mAdapter.addItems(equipCards);
-        }
+        mAdapter.addItem(new Item("装备", null));
+        mAdapter.addItems(equipCards);
 
-        if (judgeCards != null) {
-            mAdapter.addItem(new Item("判断", null));
-            mAdapter.addItems(judgeCards);
-        }
+        mAdapter.addItem(new Item("判断", null));
+        mAdapter.addItems(judgeCards);
     }
 
     public void show() {
@@ -261,8 +259,10 @@ public class PlayerDetailWindow {
             holder.title.setText(title);
             int paddingLeft = 0;
             if (isEnabled(position)) {
+                holder.title.setTextColor(parent.getContext().getResources().getColor(R.color.item));
                 paddingLeft = 10;
             } else {
+                holder.title.setTextColor(parent.getContext().getResources().getColor(R.color.item_group));
                 paddingLeft = 20;
             }
 
