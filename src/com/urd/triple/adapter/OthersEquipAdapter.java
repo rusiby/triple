@@ -31,8 +31,8 @@ public final class OthersEquipAdapter extends BaseAdapter {
     }
 
     public void updateEquips(List<Card> equips) {
+        mEquips.clear();
         if (equips != null && equips.size() > 0) {
-            mEquips.clear();
             mEquips.addAll(equips);
             notifyDataSetChanged();
         }

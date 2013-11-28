@@ -77,7 +77,19 @@ public class OthersWidget extends RelativeLayout {
 
         if (mPlayer != null) {
             update();
+        } else {
+            reset();
         }
+    }
+
+    private void reset() {
+        mIdentity.setText("空位");
+        mAdapter.updateEquips(null);
+        mHpsCount.setText("0");
+        mCardsCount.setText("0");
+        mSkill.setText("");
+        mJudgeThunder.setText("");
+        mJudgeHappy.setText("");
     }
 
     public void update() {

@@ -123,7 +123,6 @@ public class GameActivity extends BaseActivity {
 
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
-        Player self = GameCore.getInstance().getSelf();
 
         OthersWidget other01 = (OthersWidget) findViewById(R.id.others01);
         OthersWidget other02 = (OthersWidget) findViewById(R.id.others02);
@@ -142,17 +141,26 @@ public class GameActivity extends BaseActivity {
         mOthersWidgetList.add(other06);
         mOthersWidgetList.add(other07);
 
+        updatePlayers();
+    }
+
+    private void updatePlayers() {
         Collection<Player> players = GameCore.getInstance().getPlayers();
         if (players != null) {
             int size = mOthersWidgetList.size();
 
             int index = 0;
+            Player self = GameCore.getInstance().getSelf();
             Iterator<Player> iter = players.iterator();
             while (iter.hasNext()) {
                 Player player = (Player) iter.next();
                 if (player != self && index < size) {
                     mOthersWidgetList.get(index++).setPlayer(player);
                 }
+            }
+
+            for (int i = index; i < size; i++) {
+                mOthersWidgetList.get(index++).setPlayer(null);
             }
         }
     }
@@ -179,6 +187,7 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onPlayerLogout(Player player) {
+            updatePlayers();
         }
 
         @Override
@@ -222,6 +231,8 @@ public class GameActivity extends BaseActivity {
                 mSelfWidget.updateRole();
                 mSelfWidget.updateSkills();
                 mSelfWidget.updateHp();
+            } else {
+                updateOthers();
             }
         }
 
