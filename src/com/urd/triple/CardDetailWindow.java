@@ -73,7 +73,7 @@ public class CardDetailWindow {
                 @Override
                 public void doAction() {
                     final PlayerAdapter adapter = new PlayerAdapter();
-                    AlertDialog mMenuDialog = createPlayerDialog(adapter, new OnClickListener() {
+                    AlertDialog dialog = createPlayerDialog(adapter, new OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -83,7 +83,9 @@ public class CardDetailWindow {
                             dialog.dismiss();
                         }
                     });
-                    mMenuDialog.show();
+
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
                 }
             }));
             mAdapter.addItem(new Item("判定区", new Callback() {
@@ -91,7 +93,7 @@ public class CardDetailWindow {
                 @Override
                 public void doAction() {
                     final PlayerAdapter adapter = new PlayerAdapter();
-                    AlertDialog mMenuDialog = createPlayerDialog(adapter, new OnClickListener() {
+                    AlertDialog dialog = createPlayerDialog(adapter, new OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -101,7 +103,8 @@ public class CardDetailWindow {
                             dialog.dismiss();
                         }
                     });
-                    mMenuDialog.show();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
                 }
             }));
         } else {
@@ -125,11 +128,12 @@ public class CardDetailWindow {
 
             @Override
             public void doAction() {
-                new AlertDialog.Builder(mContext)
+                AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setView(new HeroView(mContext, mCard.id))
                         .setCancelable(true)
-                        .create()
-                        .show();
+                        .create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
             }
         }));
     }

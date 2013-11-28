@@ -52,7 +52,7 @@ public final class EquipAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(getItem(position).detail.name);
+        holder.title.setText(getItem(position).detail.shortName);
 
         return convertView;
     }
