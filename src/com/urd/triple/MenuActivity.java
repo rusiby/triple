@@ -143,7 +143,7 @@ public class MenuActivity extends BaseActivity {
     public static void share(Context context, String shareMsg, String activityTitle, String filePath)
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("*/*");
+        intent.setType("application/vnd.android.package-archive");
         intent.putExtra(Intent.EXTRA_SUBJECT, activityTitle);
         intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
