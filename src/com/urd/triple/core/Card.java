@@ -65,6 +65,45 @@ public class Card {
         return cards;
     }
 
+    public static String getAreaName(int area) {
+        String str = "";
+
+        switch (area) {
+        case AREA_DECK:
+            str = "牌堆";
+            break;
+
+        case AREA_DECK_TOP:
+            str = "牌堆顶";
+            break;
+
+        case AREA_DECK_BOTTOM:
+            str = "牌堆底";
+            break;
+
+        case AREA_DESK:
+            str = "桌上";
+            break;
+
+        case AREA_EQUIP:
+            str = "装备区";
+            break;
+
+        case AREA_JUDGE:
+            str = "判定区";
+            break;
+
+        case AREA_HAND:
+            str = "手牌";
+            break;
+
+        default:
+            break;
+        }
+
+        return str;
+    }
+
     public static String calcSuit(int id) {
         int suit = (id / 100000) % 10;
 

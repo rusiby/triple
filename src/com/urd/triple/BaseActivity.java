@@ -18,7 +18,7 @@ public class BaseActivity extends Activity {
     protected void showToast(String format, Object... args) {
         String msg = String.format(Locale.US, format, args);
         if (sToast == null) {
-            sToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+            sToast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
         } else {
             sToast.setText(msg);
         }

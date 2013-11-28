@@ -34,6 +34,23 @@ public class Player {
         return this.role == Role.LORD;
     }
 
+    public boolean containsCard(int card) {
+        return getCard(card) != null;
+    }
+
+    public boolean containsCard(Card card) {
+        return getCard(card.id) != null;
+    }
+
+    public String getFullname() {
+        String fullname = name;
+        if (hero != Hero.UNKNOWN) {
+            fullname = String.format(Locale.US, "%s(%s)", name, Hero.valueOf(hero).name);
+        }
+
+        return fullname;
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.US, "[id=%s name=%s]", id, name);
