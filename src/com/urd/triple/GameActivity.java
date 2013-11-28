@@ -2,7 +2,7 @@ package com.urd.triple;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -140,54 +140,37 @@ public class GameActivity extends BaseActivity {
         mOthersWidgetList.add(other05);
         mOthersWidgetList.add(other06);
         mOthersWidgetList.add(other07);
+        Collections.reverse(mOthersWidgetList);
 
-        updatePlayers();
+        updateOthers();
+
+        mDeskCard = (DeskCardView) findViewById(R.id.desk_card);
     }
 
-    private void updatePlayers() {
-        Collection<Player> players = GameCore.getInstance().getPlayers();
-        if (players != null) {
-            int size = mOthersWidgetList.size();
+    private void updateOtherPlayers() {
+        for (OthersWidget other : mOthersWidgetList) {
+            other.setPlayer(null);
+        }
 
-            int index = 0;
-            Player self = GameCore.getInstance().getSelf();
-            Iterator<Player> iter = players.iterator();
-            while (iter.hasNext()) {
-                Player player = (Player) iter.next();
-                if (player != self && index < size) {
-                    mOthersWidgetList.get(index++).setPlayer(player);
-                }
-            }
-
-            for (int i = index; i < size; i++) {
-                mOthersWidgetList.get(index++).setPlayer(null);
+        List<Player> players = new ArrayList<Player>(mGameCore.getPlayers());
+        int offset = players.indexOf(mGameCore.getSelf()) + 1;
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            if (player != mGameCore.getSelf()) {
+                mOthersWidgetList.get(((i + 8) - offset) % 8).setPlayer(player);
             }
         }
     }
 
     private void updateOthers() {
-        Collection<Player> players = GameCore.getInstance().getPlayers();
-        if (players != null) {
-            int size = mOthersWidgetList.size();
-
-            int index = 0;
-            Iterator<Player> iter = players.iterator();
-            while (iter.hasNext()) {
-                Player player = (Player) iter.next();
-                if (player != GameCore.getInstance().getSelf() && index < size) {
-                    mOthersWidgetList.get(index++).update();
-                }
-            }
-        }
-
-        mDeskCard = (DeskCardView) findViewById(R.id.desk_card);
+        updateOtherPlayers();
     }
 
     private final GameListener mGameListener = new GameListener() {
 
         @Override
         public void onPlayerLogout(Player player) {
-            updatePlayers();
+            updateOthers();
         }
 
         @Override
