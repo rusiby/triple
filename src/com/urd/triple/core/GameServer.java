@@ -235,8 +235,6 @@ public class GameServer implements GameSocketListener {
         }
         if (req.dstArea == Card.AREA_DECK_TOP || req.dstArea == Card.AREA_DECK_BOTTOM) {
             mDeck.add(new Card(req.card), notify.dstArea);
-
-            notify.dstArea = Card.AREA_DECK;
         }
 
         broadcast(notify);
