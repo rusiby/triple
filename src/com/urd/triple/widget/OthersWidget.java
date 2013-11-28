@@ -68,7 +68,7 @@ public class OthersWidget extends RelativeLayout {
         mSkill = (TextView) findViewById(R.id.tv_skills);
 
         mEquipmentContainer = (GridView) findViewById(R.id.gv_equipment_container);
-        mAdapter = new OthersEquipAdapter();
+        mAdapter = new OthersEquipAdapter(getContext());
         mEquipmentContainer.setAdapter(mAdapter);
     }
 
@@ -134,10 +134,10 @@ public class OthersWidget extends RelativeLayout {
 
         for (int i = 0, len = judgeCards.size(); i < len; i++) {
             String name = judgeCards.get(i).detail.name;
-            if (name.equals("乐不思蜀")) {
-                happyCount++;
-            } else if (name.equals("闪电")) {
+            if (name.equals("闪电")) {
                 thunderCount++;
+            } else {
+                happyCount++;
             }
         }
 
@@ -165,7 +165,7 @@ public class OthersWidget extends RelativeLayout {
         mHpsCount.setText("" + mPlayer.hp);
     }
 
-    public void updateEquipArea(List<Card> equips) {
+    private void updateEquipArea(List<Card> equips) {
         mAdapter.updateEquips(equips);
     }
 

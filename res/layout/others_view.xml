@@ -21,6 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_identity"
+        android:layout_marginTop="1dp"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="1dp"
         android:listSelector="@null"
         android:numColumns="2" />
 
