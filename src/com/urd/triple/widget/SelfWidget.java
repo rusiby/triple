@@ -105,6 +105,17 @@ public class SelfWidget extends RelativeLayout {
         mToDesk.setOnClickListener(mGetCardListener);
     }
 
+    public void updateViews() {
+        if (mPlayer.hero != Hero.UNKNOWN) {
+            updateCardArea();
+            updateHp();
+            updateSkills();
+        }
+        if (mPlayer.role != Role.UNKNOWN) {
+            updateRole();
+        }
+    }
+
     public void updateCardArea() {
         List<Card> cards = mPlayer.cards;
         List<Card> handCards = new ArrayList<Card>();
@@ -177,8 +188,9 @@ public class SelfWidget extends RelativeLayout {
     }
 
     public void updateSkills() {
-        List<String> skills = Hero.valueOf(mPlayer.hero).skills;
-        if (skills != null) {
+        if (mPlayer.hero != Hero.UNKNOWN) {
+            Hero hero = Hero.valueOf(mPlayer.hero);
+            List<String> skills = hero.skills;
             mSkill1.setText(skills.get(0));
             if (skills.size() > 1) {// 目前最多两个技能
                 mSkill2.setText(skills.get(1));

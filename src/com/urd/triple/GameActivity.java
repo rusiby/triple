@@ -164,6 +164,13 @@ public class GameActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        mSelfWidget.updateViews();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
