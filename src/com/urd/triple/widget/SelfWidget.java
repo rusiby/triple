@@ -29,6 +29,7 @@ import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
 import com.urd.triple.core.Role;
+import com.urd.triple.utils.AssetsUtil;
 
 public class SelfWidget extends RelativeLayout {
     private Player mPlayer;
@@ -177,14 +178,16 @@ public class SelfWidget extends RelativeLayout {
         String info = "";
         if (mPlayer.hero != Hero.UNKNOWN) {
             info += Hero.valueOf(mPlayer.hero).name + " ";
+
+            updateAvator(mPlayer.hero);
         }
         info += Role.getName(mPlayer.role);
         mRole.setText(info);
     }
 
-    private void updateAvator() {
-        // TODO 更具武将的id加载武将的头像
-        // mAvator.setImageResource(0);
+    private void updateAvator(int heroId) {
+        Drawable drawable = AssetsUtil.ceateDrawableFromAssets(getContext(), Hero.valueOf(heroId).portraitPic);
+        mAvator.setImageDrawable(drawable);
     }
 
     public void updateSkills() {
