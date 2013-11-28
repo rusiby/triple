@@ -101,45 +101,50 @@ public class GameActivity extends BaseActivity {
     }
 
     private void showHeroListDialog(Collection<Integer> heroes) {
-        hideHeroList();
 
-        final HeroListAdapter adapter = new HeroListAdapter(heroes);
-        mHeroListDialog = new AlertDialog.Builder(this).setAdapter(adapter,
-                new DialogInterface.OnClickListener() {
+        if (mHeroListDialog == null || mHeroListDialog instanceof ProgressDialog) {
+            hideHeroList();
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final Hero hero = adapter.getItem(which);
-                        (new AlertDialog.Builder(GameActivity.this))
-                                .setView(new HeroView(GameActivity.this, hero.id))
-                                .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
+            final HeroListAdapter adapter = new HeroListAdapter(heroes);
+            mHeroListDialog = new AlertDialog.Builder(this).setAdapter(adapter,
+                    new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mGameCore.selectHero(hero.id);
-                                    }
-                                })
-                                .setNegativeButton("取　消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final Hero hero = adapter.getItem(which);
+                            (new AlertDialog.Builder(GameActivity.this))
+                                    .setView(new HeroView(GameActivity.this, hero.id))
+                                    .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mHeroListDialog.show();
-                                    }
-                                })
-                                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mGameCore.selectHero(hero.id);
+                                        }
+                                    })
+                                    .setNegativeButton("取　消", new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onCancel(DialogInterface dialog) {
-                                        mHeroListDialog.show();
-                                    }
-                                })
-                                .create()
-                                .show();
-                    }
-                }).create();
-        mHeroListDialog.setCancelable(false);
-        mHeroListDialog.setCanceledOnTouchOutside(false);
-        mHeroListDialog.show();
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mHeroListDialog.show();
+                                        }
+                                    })
+                                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                        @Override
+                                        public void onCancel(DialogInterface dialog) {
+                                            mHeroListDialog.show();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
+                    }).create();
+            mHeroListDialog.setCancelable(false);
+            mHeroListDialog.setCanceledOnTouchOutside(false);
+        }
+        if (!(mHeroListDialog.isShowing())) {
+            mHeroListDialog.show();
+        }
     }
 
     private void showHeroProgressDialog(String msg) {

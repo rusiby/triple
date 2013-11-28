@@ -7,7 +7,6 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -17,10 +16,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -111,27 +107,45 @@ public class PlayerDetailWindow {
     }
 
     public void show() {
-        ListView listview = (ListView) LayoutInflater.from(mContext).inflate(R.layout.popmenu_list, null);
-        listview.setOnItemClickListener(new OnItemClickListener() {
+        // ListView listview = (ListView) LayoutInflater.from(mContext).inflate(R.layout.popmenu_list, null);
+        // listview.setOnItemClickListener(new OnItemClickListener() {
+        //
+        // @Override
+        // public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // if (position == 0) {
+        // showHeroDetailWindow(mPlayer);
+        // } else {
+        // PlayerInfoAdapter adapter = (PlayerInfoAdapter) parent.getAdapter();
+        // Item item = adapter.getItem(position);
+        // showCardDetailWindow(item.getCard());
+        // }
+        // dismiss();
+        // }
+        // });
+        // listview.setAdapter(mAdapter);
+        // setContentView(listview);
+        // preShow();
+        //
+        // // mWindow.showAsDropDown(mAnchor);
+        // mWindow.showAtLocation(mParent, Gravity.CENTER, 0, 0);
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    showHeroDetailWindow(mPlayer);
-                } else {
-                    PlayerInfoAdapter adapter = (PlayerInfoAdapter) parent.getAdapter();
-                    Item item = adapter.getItem(position);
-                    showCardDetailWindow(item.getCard());
-                }
-                dismiss();
-            }
-        });
-        listview.setAdapter(mAdapter);
-        setContentView(listview);
-        preShow();
+        AlertDialog dialog = (new AlertDialog.Builder(mContext))
+                .setAdapter(mAdapter, new DialogInterface.OnClickListener() {
 
-        // mWindow.showAsDropDown(mAnchor);
-        mWindow.showAtLocation(mParent, Gravity.CENTER, 0, 0);
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            showHeroDetailWindow(mPlayer);
+                        } else {
+                            Item item = mAdapter.getItem(which);
+                            showCardDetailWindow(item.getCard());
+                        }
+                    }
+                })
+                .create();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     protected void showHeroDetailWindow(Player player) {
@@ -257,17 +271,13 @@ public class PlayerDetailWindow {
             }
             String title = getItem(position).getTitle();
             holder.title.setText(title);
-            int paddingLeft = 0;
             if (isEnabled(position)) {
                 holder.title.setTextColor(parent.getContext().getResources().getColor(R.color.item));
-                paddingLeft = 10;
+                holder.title.setGravity(Gravity.LEFT);
             } else {
                 holder.title.setTextColor(parent.getContext().getResources().getColor(R.color.item_group));
-                paddingLeft = 20;
+                holder.title.setGravity(Gravity.CENTER);
             }
-
-            int padding = parent.getContext().getResources().getDimensionPixelSize(R.dimen.item_vertical_margin);
-            holder.title.setPadding(paddingLeft, padding, 0, padding);
 
             return convertView;
         }

@@ -11,10 +11,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.urd.triple.core.Card;
@@ -155,24 +152,19 @@ public class CardDetailWindow {
     }
 
     public void show() {
-        Builder builder = new Builder(mContext);
-        ListView listview = (ListView) LayoutInflater.from(mContext).inflate(R.layout.popmenu_list, null);
-        final AlertDialog dialog = builder.setView(listview).create();
-        listview.setOnItemClickListener(new OnItemClickListener() {
+        AlertDialog dialog = (new AlertDialog.Builder(mContext))
+                .setAdapter(mAdapter, new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CardActionAdapter adapter = (CardActionAdapter) parent.getAdapter();
-                Item item = adapter.getItem(position);
-                item.getCallback().doAction();
-
-                dialog.dismiss();
-            }
-        });
-        listview.setAdapter(mAdapter);
-        builder.setMessage("操作");
-        dialog.show();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Item item = mAdapter.getItem(which);
+                        item.getCallback().doAction();
+                    }
+                })
+                .create();
+        dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     public static interface Callback {

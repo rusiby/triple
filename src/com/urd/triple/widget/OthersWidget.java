@@ -183,6 +183,12 @@ public class OthersWidget extends RelativeLayout {
 
     private void updateHpCount() {
         mHpsCount.setText("" + mPlayer.hp);
+
+        if (mPlayer.hp <= 0) {
+            mIdentity.setTextColor(0xFF990000);
+        } else {
+            mIdentity.setTextColor(android.graphics.Color.BLACK);
+        }
     }
 
     private void updateEquipArea(List<Card> equips) {
