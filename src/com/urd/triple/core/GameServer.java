@@ -109,7 +109,7 @@ public class GameServer implements GameSocketListener {
         command.src = socket.getID();
         switch (command.getID()) {
         case LoginReq.ID:
-            if (!(mPlayerMananger.contains(socket))) {
+            if (!mPlaying && !(mPlayerMananger.contains(socket))) {
                 Player player = mPlayerMananger.add(socket, ((LoginReq) command).name);
                 LOG.info("playe login. player={}", player);
 
