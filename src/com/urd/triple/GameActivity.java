@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -26,6 +29,7 @@ import com.urd.triple.widget.OthersWidget;
 import com.urd.triple.widget.SelfWidget;
 
 public class GameActivity extends BaseActivity {
+    private static final Logger LOG = LoggerFactory.getLogger(GameActivity.class);
 
     private SelfWidget mSelfWidget;
     private List<OthersWidget> mOthersWidgetList;
@@ -120,7 +124,6 @@ public class GameActivity extends BaseActivity {
     private void setupViews() {
         mSelfWidget = (SelfWidget) findViewById(R.id.self);
         Player self = GameCore.getInstance().getSelf();
-        mSelfWidget.setPlayer(self);
 
         OthersWidget other01 = (OthersWidget) findViewById(R.id.others01);
         OthersWidget other02 = (OthersWidget) findViewById(R.id.others02);
@@ -192,6 +195,7 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onGameStart(int role, Player lord) {
+
         }
 
         @Override
@@ -201,6 +205,8 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onPlayerHeroSelected(Player player, int hero) {
+            LOG.debug("on player hero selected");
+
             int heroSelectedCount = 0;
             for (Player p : mGameCore.getPlayers()) {
                 if (p.hero != Hero.UNKNOWN) {
@@ -242,9 +248,9 @@ public class GameActivity extends BaseActivity {
 
         @Override
         public void onPlayerRole(Player player) {
-            if (player == GameCore.getInstance().getSelf()) {
-                mSelfWidget.updateRole();
-            } else {
+            LOG.debug("on player role");
+
+            if (player != GameCore.getInstance().getSelf()) {
                 updateOthers();
             }
         }

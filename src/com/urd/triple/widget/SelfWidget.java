@@ -64,11 +64,15 @@ public class SelfWidget extends RelativeLayout {
 
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.self_view, this);
+
+        mPlayer = GameCore.getInstance().getSelf();
     }
 
     @Override
     protected void onFinishInflate() {
         setupViews();
+
+        updateRole();
     }
 
     private void setupViews() {
@@ -99,10 +103,6 @@ public class SelfWidget extends RelativeLayout {
         mShowRole.setOnClickListener(onShowRoleClickListener);
         mToDesk = (Button) findViewById(R.id.to_desk);
         mToDesk.setOnClickListener(mGetCardListener);
-    }
-
-    public void setPlayer(Player self) {
-        mPlayer = self;
     }
 
     public void updateCardArea() {
