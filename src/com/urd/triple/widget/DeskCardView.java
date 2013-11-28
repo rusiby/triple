@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Player;
+import com.urd.triple.core.commands.CardAction;
 
 public class DeskCardView extends RelativeLayout implements OnItemClickListener {
     private Gallery mDeskCardsArea;
@@ -69,7 +70,7 @@ public class DeskCardView extends RelativeLayout implements OnItemClickListener 
         builder.setItems(array, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    GameCore.getInstance().doCardAction(card, Card.AREA_HAND, mPlayer);
+                    GameCore.getInstance().doCardAction(card, CardAction.MODE_GET, Card.AREA_HAND, null);
                 } else {
                     AlertDialog detail = new AlertDialog.Builder(getContext())
                             .setView(new HeroView(getContext(), card.id))

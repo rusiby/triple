@@ -229,12 +229,12 @@ public class GameServer implements GameSocketListener {
         LOG.info("card action req. req={}", req);
 
         CardActionNotify notify = new CardActionNotify(req);
-        if (req.srcArea == Card.AREA_DECK) {
+        if (req.action.srcArea == Card.AREA_DECK) {
             Card card = mDeck.pull();
-            notify.card = card.id;
+            notify.action.card = card.id;
         }
-        if (req.dstArea == Card.AREA_DECK_TOP || req.dstArea == Card.AREA_DECK_BOTTOM) {
-            mDeck.add(new Card(req.card), notify.dstArea);
+        if (req.action.dstArea == Card.AREA_DECK_TOP || req.action.dstArea == Card.AREA_DECK_BOTTOM) {
+            mDeck.add(new Card(req.action.card), notify.action.dstArea);
         }
 
         broadcast(notify);
@@ -263,39 +263,42 @@ public class GameServer implements GameSocketListener {
     private void sendTo(Command command, Player player) {
         LOG.debug("send command to {}. command={}", player.name, command);
 
-        command.dst = player.id;
+        internalSendTo(player, command);
 
         if (mGameProxy != null) {
             mGameProxy.execute(command);
         }
-
-        player.socket.send(command);
     }
 
     private void broadcast(Command command) {
         LOG.debug("broadcast command. command={}", command);
 
-        if (mGameProxy != null) {
-            mGameProxy.execute(command);
+        for (Player p : mPlayerMananger.getPlayers()) {
+            internalSendTo(p, command);
         }
 
-        for (Player p : mPlayerMananger.getPlayers()) {
-            p.socket.send(command);
+        if (mGameProxy != null) {
+            mGameProxy.execute(command);
         }
     }
 
     private void broadcastExcept(Command command, Player player) {
         LOG.debug("broadcast command except {}. command={}", player.name, command);
 
+        for (Player p : mPlayerMananger.getPlayers()) {
+            if (p != player) {
+                internalSendTo(p, command);
+            }
+        }
+
         if (mGameProxy != null) {
             mGameProxy.execute(command);
         }
+    }
 
-        for (Player p : mPlayerMananger.getPlayers()) {
-            if (p != player) {
-                p.socket.send(command);
-            }
-        }
+    private void internalSendTo(Player player, Command command) {
+        command.dst__ = player.id;
+        player.socket.send(command);
     }
 
     private void onSocketAccepted(final BluetoothSocket socket) {

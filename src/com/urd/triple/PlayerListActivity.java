@@ -118,7 +118,7 @@ public class PlayerListActivity extends ListActivity {
         }
 
         @Override
-        public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
+        public void onCardAction(Card card, int mode, int srcArea, int dstArea, Player src, Player dst) {
         }
 
         @Override

@@ -29,6 +29,7 @@ import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
 import com.urd.triple.core.Role;
+import com.urd.triple.core.commands.CardAction;
 import com.urd.triple.utils.AssetsUtil;
 
 public class SelfWidget extends RelativeLayout {
@@ -226,11 +227,11 @@ public class SelfWidget extends RelativeLayout {
         public void onClick(View v) {
             switch (v.getId()) {
             case R.id.get_card:
-                GameCore.getInstance().doCardAction(null, Card.AREA_HAND, null);
+                GameCore.getInstance().doCardAction(null, CardAction.MODE_GET, Card.AREA_HAND, null);
                 break;
 
             case R.id.to_desk:
-                GameCore.getInstance().doCardAction(null, Card.AREA_DESK, null);
+                GameCore.getInstance().doCardAction(null, CardAction.MODE_GET, Card.AREA_DESK, null);
                 break;
 
             default:

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
 import com.urd.triple.core.Player;
+import com.urd.triple.core.commands.CardAction;
 import com.urd.triple.widget.HeroView;
 
 public class CardDetailWindow {
@@ -44,28 +45,28 @@ public class CardDetailWindow {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_DESK, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_DESK, null);
                 }
             }));
             mAdapter.addItem(new Item("装备", new Callback() {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_EQUIP, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_EQUIP, mPlayer);
                 }
             }));
             mAdapter.addItem(new Item("放回牌顶", new Callback() {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_DECK_TOP, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_DECK_TOP, null);
                 }
             }));
             mAdapter.addItem(new Item("放回牌底", new Callback() {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_DECK_BOTTOM, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_DECK_BOTTOM, null);
                 }
             }));
             mAdapter.addItem(new Item("给牌", new Callback() {
@@ -79,7 +80,7 @@ public class CardDetailWindow {
                         public void onClick(DialogInterface dialog, int which) {
                             Player player = adapter.getItem(which);
 
-                            GameCore.getInstance().doCardAction(mCard, Card.AREA_HAND, player);
+                            GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_HAND, player);
                             dialog.dismiss();
                         }
                     });
@@ -99,7 +100,7 @@ public class CardDetailWindow {
                         public void onClick(DialogInterface dialog, int which) {
                             Player player = adapter.getItem(which);
 
-                            GameCore.getInstance().doCardAction(mCard, Card.AREA_JUDGE, player);
+                            GameCore.getInstance().doCardAction(mCard, CardAction.MODE_PUT, Card.AREA_JUDGE, player);
                             dialog.dismiss();
                         }
                     });
@@ -112,14 +113,14 @@ public class CardDetailWindow {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_HAND, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_GET, Card.AREA_HAND, mPlayer);
                 }
             }));
             mAdapter.addItem(new Item("丢弃", new Callback() {
 
                 @Override
                 public void doAction() {
-                    GameCore.getInstance().doCardAction(mCard, Card.AREA_DESK, mPlayer);
+                    GameCore.getInstance().doCardAction(mCard, CardAction.MODE_GET, Card.AREA_DESK, mPlayer);
                 }
             }));
         }

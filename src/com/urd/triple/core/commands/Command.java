@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 public class Command {
 
     public String src;
-    public String dst;
+    public String dst__;
 
     public int getID() {
         int commandID = -1;

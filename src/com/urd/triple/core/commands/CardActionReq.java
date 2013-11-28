@@ -3,14 +3,9 @@ package com.urd.triple.core.commands;
 public class CardActionReq extends Command {
     public static final int ID = 10;
 
-    public int card;
-    public int srcArea;
-    public int dstArea;
+    public CardAction action;
 
-    public CardActionReq(int card, int srcArea, int dstArea, String dst) {
-        this.card = card;
-        this.srcArea = srcArea;
-        this.dstArea = dstArea;
-        this.dst = dst;
+    public CardActionReq(int card, int mode, int srcArea, int dstArea, String target) {
+        action = new CardAction(card, mode, srcArea, dstArea, target);
     }
 }

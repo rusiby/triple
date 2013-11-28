@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 import com.urd.triple.core.GameSocket.GameSocketListener;
+import com.urd.triple.core.commands.CardAction;
 import com.urd.triple.core.commands.CardActionNotify;
 import com.urd.triple.core.commands.CardActionReq;
 import com.urd.triple.core.commands.ChangeHPNotify;
@@ -58,7 +59,7 @@ public class GameCore {
 
         void onPlayerHeroSelected(Player player, int hero);
 
-        void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst);
+        void onCardAction(Card card, int mode, int srcArea, int dstArea, Player src, Player dst);
 
         void onDeskClean();
 
@@ -127,12 +128,12 @@ public class GameCore {
         mClient.send(new SelectHeroNotify(hero));
     }
 
-    public void doCardAction(Card card, int area, Player target) {
+    public void doCardAction(Card card, int mode, int area, Player target) {
         if (card == null) {
             card = new Card(Card.UNKNOWN, Card.AREA_DECK);
         }
         String id = target != null ? target.id : null;
-        CardActionReq req = new CardActionReq(card.id, card.area, area, id);
+        CardActionReq req = new CardActionReq(card.id, mode, card.area, area, id);
         LOG.info("do card aciton. req={}", req);
         mClient.send(req);
     }
@@ -293,20 +294,26 @@ public class GameCore {
     }
 
     private void onCardActionNotify(CardActionNotify notify) {
+        CardAction action = notify.action;
+
         Player src = mPlayerMananger.get(notify.src);
-        Player dst = null;
-        if (notify.dst != null) {
-            dst = mPlayerMananger.get(notify.dst);
+        Player target = null;
+        if (action.target != null) {
+            target = mPlayerMananger.get(action.target);
         }
-        Card card = mGameProxy.getCard(notify.card, notify.dstArea, src);
-        if (card == null) {
-            card = mGameProxy.getCard(notify.card, notify.dstArea, dst);
+
+        Player player = null;
+        if (action.mode == CardAction.MODE_GET) {
+            player = src;
+        } else {
+            player = target;
         }
+        Card card = mGameProxy.getCard(action.card, action.dstArea, player);
 
         LOG.info("card action. action={}", notify);
 
         for (GameListener l : mListeners) {
-            l.onCardAction(card, notify.srcArea, notify.dstArea, src, dst);
+            l.onCardAction(card, action.mode, action.srcArea, action.dstArea, src, target);
         }
     }
 

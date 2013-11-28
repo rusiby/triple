@@ -219,7 +219,7 @@ public class MenuActivity extends BaseActivity {
         }
 
         @Override
-        public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
+        public void onCardAction(Card card, int mode, int srcArea, int dstArea, Player src, Player dst) {
         }
 
         @Override

@@ -15,7 +15,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import com.urd.triple.core.Card;
 import com.urd.triple.core.GameCore;
@@ -23,6 +22,7 @@ import com.urd.triple.core.GameCore.GameListener;
 import com.urd.triple.core.Hero;
 import com.urd.triple.core.Player;
 import com.urd.triple.core.Role;
+import com.urd.triple.core.commands.CardAction;
 import com.urd.triple.widget.DeskCardView;
 import com.urd.triple.widget.HeroListAdapter;
 import com.urd.triple.widget.HeroView;
@@ -273,12 +273,17 @@ public class GameActivity extends BaseActivity {
         }
 
         @Override
-        public void onCardAction(Card card, int srcArea, int dstArea, Player src, Player dst) {
+        public void onCardAction(Card card, int mode, int srcArea, int dstArea, Player src, Player dst) {
             LOG.debug("card action. card={}", card);
 
             mSelfWidget.updateCardArea();
             updateOthers();
             mDeskCard.updateViews(dst);
+
+            String target = "自己";
+            if (dst != null && dst != src) {
+                target = dst.getFullname();
+            }
 
             switch (srcArea) {
             case Card.AREA_DECK:
@@ -306,7 +311,11 @@ public class GameActivity extends BaseActivity {
                     break;
 
                 case Card.AREA_DESK:
-                    showToast("%s 将一张 %s 丢到桌面", src.getFullname(), card.detail.name);
+                    showToast("%s 将 %s %s中一张 %s 丢到桌上",
+                            src.getFullname(),
+                            target,
+                            Card.getAreaName(srcArea),
+                            card.detail.name);
                     break;
 
                 case Card.AREA_EQUIP:
@@ -316,16 +325,19 @@ public class GameActivity extends BaseActivity {
                     if (srcArea != Card.AREA_HAND || dstArea != Card.AREA_HAND) {
                         cardName = " " + card.detail.name + " ";
                     }
-                    String target = dst.getFullname();
-                    if (dst == src) {
-                        target = "自己";
+                    if (mode == CardAction.MODE_GET) {
+                        showToast("%s 从 %s 的 %s 获得一张%s",
+                                src.getFullname(),
+                                dst.getFullname(),
+                                Card.getAreaName(srcArea),
+                                cardName);
+                    } else {
+                        showToast("%s 将一张%s放到 %s 的 %s中.",
+                                src.getFullname(),
+                                cardName,
+                                target,
+                                Card.getAreaName(dstArea));
                     }
-                    showToast("%s 将一张%s从 %s 移到 %s. 目标: %s",
-                            src.getFullname(),
-                            cardName,
-                            Card.getAreaName(srcArea),
-                            Card.getAreaName(dstArea),
-                            target);
                     break;
 
                 default:

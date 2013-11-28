@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.urd.triple.core.commands.CardAction;
 import com.urd.triple.core.commands.CardActionNotify;
 import com.urd.triple.core.commands.ChangeHPNotify;
 import com.urd.triple.core.commands.CleanDeskNotify;
@@ -97,12 +98,12 @@ public class GameProxy {
     }
 
     private void onStartGameNotify(StartGameNotify notify) {
-        mPlayerMananger.get(notify.dst).role = notify.role;
+        mPlayerMananger.get(notify.dst__).role = notify.role;
         mPlayerMananger.get(notify.lordID).role = Role.LORD;
     }
 
     private void onHeroListNotify(HeroListNotify notify) {
-        mPlayerMananger.get(notify.dst).heroes = notify.heroes;
+        mPlayerMananger.get(notify.dst__).heroes = notify.heroes;
     }
 
     private void onSelectHeroNotify(SelectHeroNotify notify) {
@@ -113,11 +114,12 @@ public class GameProxy {
         Player player = mPlayerMananger.get(notify.src);
 
         Card card = null;
-        switch (notify.srcArea) {
+        CardAction action = notify.action;
+        switch (action.srcArea) {
         case Card.AREA_DECK:
-            card = new Card(notify.card);
-            card.area = notify.dstArea;
-            switch (notify.dstArea) {
+            card = new Card(action.card);
+            card.area = action.dstArea;
+            switch (action.dstArea) {
             case Card.AREA_DESK:
                 mDeskCards.add(card);
                 break;
@@ -132,25 +134,26 @@ public class GameProxy {
             break;
 
         case Card.AREA_DESK:
-            card = Card.remove(mDeskCards, notify.card);
+            card = Card.remove(mDeskCards, action.card);
             if (card != null) {
                 card.area = Card.AREA_HAND;
                 player.cards.add(card);
             } else {
-                LOG.warn("card not exist. card={} area={}", notify.card, notify.srcArea);
+                LOG.warn("card not exist. card={} area={}", action.card, action.srcArea);
             }
             break;
 
         case Card.AREA_EQUIP:
         case Card.AREA_JUDGE:
         case Card.AREA_HAND:
-            if (notify.dst != null) {
-                Player p = mPlayerMananger.get(notify.dst);
-                if (!doCardAction(p, player, notify)) {
-                    doCardAction(player, p, notify);
-                }
+            Player target = null;
+            if (action.target != null) {
+                target = mPlayerMananger.get(action.target);
+            }
+            if (action.mode == CardAction.MODE_GET) {
+                doCardAction(target, player, action);
             } else {
-                LOG.warn("dst not exist. dst={}", notify.dst);
+                doCardAction(player, target, action);
             }
             break;
 
@@ -171,13 +174,13 @@ public class GameProxy {
         mPlayerMananger.get(notify.src).role = notify.role;
     }
 
-    private boolean doCardAction(Player src, Player dst, CardActionNotify notify) {
-        Card card = Card.find(src.cards, notify.card);
+    private void doCardAction(Player src, Player dst, CardAction action) {
+        Card card = Card.find(src.cards, action.card);
         if (card != null) {
-            if (card.area == notify.srcArea) {
+            if (card.area == action.srcArea) {
                 src.cards.remove(card);
-                card.area = notify.dstArea;
-                switch (notify.dstArea) {
+                card.area = action.dstArea;
+                switch (action.dstArea) {
                 case Card.AREA_DESK:
                     mDeskCards.add(card);
                     break;
@@ -193,9 +196,7 @@ public class GameProxy {
                 }
             }
         } else {
-            LOG.warn("card not exist. card={} area={}", notify.card, notify.srcArea);
+            LOG.warn("card not exist. card={} area={}", action.card, action.srcArea);
         }
-
-        return card != null;
     }
 }
