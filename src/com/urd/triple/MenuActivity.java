@@ -117,6 +117,10 @@ public class MenuActivity extends BaseActivity {
         super.onResume();
 
         mGameCore.registerListener(mGameListener);
+
+        if (!(mMenuDialog.isShowing()) || !(mProgressDialog.isShowing())) {
+            mMenuDialog.show();
+        }
     }
 
     @Override
