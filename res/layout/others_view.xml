@@ -14,6 +14,7 @@
         android:background="#898989"
         android:gravity="center"
         android:text="空位"
+        android:textColor="@color/others_item_text"
         android:textSize="@dimen/others_view_test_size" />
 
     <GridView
@@ -40,6 +41,7 @@
             android:layout_height="wrap_content"
             android:background="#898989"
             android:text="0"
+            android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
 
         <TextView
@@ -50,6 +52,7 @@
             android:layout_toRightOf="@id/tv_hp_count"
             android:background="#898989"
             android:text="0"
+            android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
 
         <TextView
@@ -59,7 +62,7 @@
             android:layout_marginLeft="1dp"
             android:layout_toRightOf="@id/tv_cards_count"
             android:background="#898989"
-            android:text=""
+            android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
     </RelativeLayout>
 
@@ -78,7 +81,7 @@
             android:layout_weight="1.0"
             android:background="#898989"
             android:gravity="center"
-            android:text=""
+            android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
 
         <TextView
@@ -89,7 +92,7 @@
             android:layout_weight="1.0"
             android:background="#898989"
             android:gravity="center"
-            android:text=""
+            android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
     </LinearLayout>
 

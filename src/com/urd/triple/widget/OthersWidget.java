@@ -92,10 +92,12 @@ public class OthersWidget extends RelativeLayout {
         mSkill.setText("");
         mJudgeThunder.setText("");
         mJudgeHappy.setText("");
+        mLayout.setVisibility(View.INVISIBLE);
     }
 
     public void update() {
         if (mPlayer != null) {
+            mLayout.setVisibility(View.VISIBLE);
             updateIdentity(mPlayer.role);
             updateCardArea();
             updateHpCount();
@@ -157,13 +159,17 @@ public class OthersWidget extends RelativeLayout {
 
         if (happyCount > 0) {
             mJudgeHappy.setText("乐:" + happyCount);
+            mJudgeHappy.setVisibility(View.VISIBLE);
         } else {
             mJudgeHappy.setText("");
+            mJudgeHappy.setVisibility(View.GONE);
         }
         if (thunderCount > 0) {
             mJudgeThunder.setText("电:" + thunderCount);
+            mJudgeThunder.setVisibility(View.VISIBLE);
         } else {
             mJudgeThunder.setText("");
+            mJudgeThunder.setVisibility(View.GONE);
         }
     }
 
