@@ -72,6 +72,12 @@ public class GameServer implements GameSocketListener {
             mAcceptThread.cancel();
             mAcceptThread = null;
         }
+        for (GameSocket socket : mClients) {
+            socket.close();
+        }
+        mClients.clear();
+        mPlayerMananger.clear();
+        mPlaying = false;
         mHandler.removeCallbacksAndMessages(null);
     }
 
