@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -223,22 +224,31 @@ public class OthersWidget extends RelativeLayout {
     }
 
     private void showPlayerDetailWindow() {
-        if (mPlayer != null) {
-            PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
-            window.show();
-        }
+        PlayerDetailWindow window = new PlayerDetailWindow(getContext(), getRootView(), mPlayer);
+        window.setOnDismissListener(mOnDismissListener);
+        window.show();
     }
+
+    private PopupWindow.OnDismissListener mOnDismissListener = new PopupWindow.OnDismissListener() {
+
+        @Override
+        public void onDismiss() {
+            mLayout.setSelected(false);
+        }
+    };
 
     private final OnClickListener mOnClickLayoutListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-            if (!mLayout.isSelected()) {
-                mLayout.setSelected(true);
+            if (mPlayer != null && Hero.valueOf(mPlayer.hero) != null) {
+                if (!mLayout.isSelected()) {
+                    mLayout.setSelected(true);
 
-                showPlayerDetailWindow();
-            } else {
-                mLayout.setSelected(false);
+                    showPlayerDetailWindow();
+                } else {
+                    mLayout.setSelected(false);
+                }
             }
         }
     };
