@@ -55,8 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_others"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/others07"
         android:layout_toRightOf="@id/others01" />
 

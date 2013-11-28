@@ -128,6 +128,7 @@ public class CardDetailWindow {
             public void doAction() {
                 new AlertDialog.Builder(mContext)
                         .setView(new HeroView(mContext, mCard.id))
+                        .setCancelable(true)
                         .create()
                         .show();
             }
