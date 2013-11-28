@@ -1,5 +1,6 @@
 package com.urd.triple;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,8 +9,14 @@ import java.util.UUID;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
@@ -29,6 +36,7 @@ public class MenuActivity extends BaseActivity {
     private static class MenuItem {
         private static final int MENU_CREATE = 0;
         private static final int MENU_JOIN = 1;
+        private static final int MENU_SHARE = 2;
 
         public int id;
         public String title;
@@ -52,7 +60,8 @@ public class MenuActivity extends BaseActivity {
 
         final MenuItem[] items = new MenuItem[] {
                 new MenuItem(MenuItem.MENU_CREATE, getString(R.string.create)),
-                new MenuItem(MenuItem.MENU_JOIN, getString(R.string.join))
+                new MenuItem(MenuItem.MENU_JOIN, getString(R.string.join)),
+                new MenuItem(MenuItem.MENU_SHARE, getString(R.string.share))
         };
         mMenuDialog = (new AlertDialog.Builder(this))
                 .setAdapter(new ArrayAdapter<MenuItem>(this, R.layout.menu_item, items), new OnClickListener() {
@@ -68,6 +77,10 @@ public class MenuActivity extends BaseActivity {
 
                         case MenuItem.MENU_JOIN:
                             selectDevice();
+                            break;
+
+                        case MenuItem.MENU_SHARE:
+                            shareFile();
                             break;
 
                         default:
@@ -111,6 +124,27 @@ public class MenuActivity extends BaseActivity {
         super.onPause();
 
         mGameCore.unregisterListener(mGameListener);
+    }
+
+    private void shareFile() {
+        try {
+            ApplicationInfo ap = this.getPackageManager().getApplicationInfo(this.getPackageName(),
+                    PackageManager.GET_SHARED_LIBRARY_FILES);
+            share(this, "share", "分享文件", ap.sourceDir);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void share(Context context, String shareMsg, String activityTitle, String filePath)
+    {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_SUBJECT, activityTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(Intent.createChooser(intent, activityTitle));
     }
 
     private void selectDevice() {
