@@ -9,7 +9,7 @@
     <dimen name="avator_height">60dp</dimen>
     <dimen name="contanier_height">120dp</dimen>
     <dimen name="tv_tb_padding">2dp</dimen>
-    <dimen name="self_contanier_width">200dp</dimen>
+    <dimen name="self_contanier_width">190dp</dimen>
     <dimen name="pupup_menu_width">500dp</dimen>
     <dimen name="others_view_test_size">13sp</dimen>
     
