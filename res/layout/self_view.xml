@@ -19,8 +19,7 @@
                 android:layout_width="@dimen/avator_width"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/tv_tb_padding"
-                android:text="奸臣" />
+                android:padding="@dimen/tv_tb_padding" />
 
             <ImageView
                 android:id="@+id/avator"
