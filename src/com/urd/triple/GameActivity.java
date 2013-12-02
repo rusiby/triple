@@ -335,7 +335,10 @@ public class GameActivity extends BaseActivity {
                 case Card.AREA_JUDGE:
                 case Card.AREA_HAND:
                     String cardName = "牌";
-                    if (srcArea != Card.AREA_HAND || dstArea != Card.AREA_HAND) {
+                    if (srcArea != Card.AREA_HAND ||
+                            dstArea != Card.AREA_HAND ||
+                            src == mGameCore.getSelf() ||
+                            dst == mGameCore.getSelf()) {
                         cardName = " " + card.detail.name + " ";
                     }
                     if (mode == CardAction.MODE_GET) {
