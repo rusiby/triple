@@ -24,9 +24,9 @@
         android:layout_below="@id/tv_identity"
         android:layout_marginTop="1dp"
         android:horizontalSpacing="1dp"
-        android:verticalSpacing="1dp"
         android:listSelector="@null"
-        android:numColumns="2" />
+        android:numColumns="2"
+        android:verticalSpacing="1dp" />
 
     <RelativeLayout
         android:id="@+id/skill_layout"
@@ -62,6 +62,7 @@
             android:layout_marginLeft="1dp"
             android:layout_toRightOf="@id/tv_cards_count"
             android:background="#898989"
+            android:gravity="center"
             android:textColor="@color/others_item_text"
             android:textSize="@dimen/others_view_test_size" />
     </RelativeLayout>

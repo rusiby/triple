@@ -9,6 +9,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -70,6 +72,13 @@ public class OthersWidget extends RelativeLayout {
         mSkill = (TextView) findViewById(R.id.tv_skills);
 
         mEquipmentContainer = (GridView) findViewById(R.id.gv_equipment_container);
+        mEquipmentContainer.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mOnClickLayoutListener.onClick(view);
+            }
+        });
         mAdapter = new OthersEquipAdapter(getContext());
         mEquipmentContainer.setAdapter(mAdapter);
     }
@@ -196,41 +205,23 @@ public class OthersWidget extends RelativeLayout {
     }
 
     private void updateIdentity(int role) {
-        String roleName = null;
-        switch (role) {
-        case Role.LORD:
-            roleName = "主公:";
-            break;
-
-        case Role.LOYALIST:
-            roleName = "忠臣:";
-            break;
-
-        case Role.REBEL:
-            roleName = "反贼:";
-            break;
-
-        case Role.TRAITOR:
-            roleName = "内奸:";
-            break;
-
-        default:
-            roleName = "";
-            break;
+        String roleName = "";
+        if (role != Role.UNKNOWN) {
+            roleName = Role.getName(role);
         }
 
         String heroName = "";
         if (mPlayer.isLord() && mPlayer.hero != Hero.UNKNOWN || GameCore.getInstance().isAllPlayerHeroSelected()) {
             heroName = Hero.valueOf(mPlayer.hero).name;
         }
-        String identity = String.format("%1$s %2$s %3$s", mPlayer.name, roleName, heroName);
+        String identity = String.format("%1$s %2$s %3$s", mPlayer.name, heroName, roleName);
         mIdentity.setText(identity);
     }
 
     private void updateSkills() {
         String skills = "";
         if (mPlayer.isLord() && mPlayer.hero != Hero.UNKNOWN || GameCore.getInstance().isAllPlayerHeroSelected()) {
-            skills = StringUtils.join(Hero.valueOf(mPlayer.hero).skills, ",");
+            skills = StringUtils.join(Hero.valueOf(mPlayer.hero).skills, " ");
         }
         mSkill.setText(skills);
     }
