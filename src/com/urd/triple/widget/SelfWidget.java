@@ -167,7 +167,11 @@ public class SelfWidget extends RelativeLayout {
 
     private void updateHandCardArea(List<Card> handCards) {
         CardAdapter adapter = (CardAdapter) mhandCardsArea.getAdapter();
+        boolean needFocus = handCards.size() > adapter.getCount();
         adapter.setHandCard(handCards);
+        if (needFocus) {
+            mhandCardsArea.setSelection(handCards.size() - 1, true);
+        }
     }
 
     private void updateEquipArea(List<Card> equips) {
