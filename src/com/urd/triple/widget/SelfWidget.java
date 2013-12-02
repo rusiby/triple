@@ -250,7 +250,7 @@ public class SelfWidget extends RelativeLayout {
         @Override
         public void onClick(View v) {
             if (mPlayer.isLord()) {
-                Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
+                Builder builder = new Builder(getContext()).setMessage("是否清台?").setNegativeButton("取消", null)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
                             @Override
@@ -271,7 +271,7 @@ public class SelfWidget extends RelativeLayout {
 
         @Override
         public void onClick(View v) {
-            Builder builder = new Builder(getContext()).setMessage("提示").setNegativeButton("取消", null)
+            Builder builder = new Builder(getContext()).setMessage("是否继续亮身份?").setNegativeButton("取消", null)
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
                         @Override
