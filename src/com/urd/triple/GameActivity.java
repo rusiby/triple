@@ -37,6 +37,7 @@ public class GameActivity extends BaseActivity {
     private DeskCardView mDeskCard;
     private GameCore mGameCore;
     private Dialog mHeroListDialog;
+    private Dialog mHeroDetailDialog;
 
     public static void launch(Context context, Intent intent) {
         intent.setClass(context, GameActivity.class);
@@ -98,10 +99,15 @@ public class GameActivity extends BaseActivity {
             }
             mHeroListDialog = null;
         }
+        if (mHeroDetailDialog != null) {
+            if (mHeroDetailDialog.isShowing()) {
+                mHeroDetailDialog.dismiss();
+            }
+            mHeroDetailDialog = null;
+        }
     }
 
     private void showHeroListDialog(Collection<Integer> heroes) {
-
         if (mHeroListDialog == null || mHeroListDialog instanceof ProgressDialog) {
             hideHeroList();
 
@@ -112,7 +118,7 @@ public class GameActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final Hero hero = adapter.getItem(which);
-                            (new AlertDialog.Builder(GameActivity.this))
+                            mHeroDetailDialog = (new AlertDialog.Builder(GameActivity.this))
                                     .setView(new HeroView(GameActivity.this, hero.id))
                                     .setPositiveButton("确　定", new DialogInterface.OnClickListener() {
 
@@ -135,15 +141,17 @@ public class GameActivity extends BaseActivity {
                                             mHeroListDialog.show();
                                         }
                                     })
-                                    .create()
-                                    .show();
+                                    .create();
+                            mHeroDetailDialog.show();
                         }
                     }).create();
             mHeroListDialog.setCancelable(false);
             mHeroListDialog.setCanceledOnTouchOutside(false);
         }
-        if (!(mHeroListDialog.isShowing())) {
+        if (!(mHeroDetailDialog != null && mHeroDetailDialog.isShowing()) && !(mHeroListDialog.isShowing())) {
             mHeroListDialog.show();
+
+            mHeroDetailDialog = null;
         }
     }
 
