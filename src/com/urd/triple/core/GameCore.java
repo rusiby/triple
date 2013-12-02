@@ -207,6 +207,18 @@ public class GameCore {
         return Collections.emptyList();
     }
 
+    public int getClientCount() {
+        int count = 0;
+
+        if (mServer != null) {
+            count = mServer.getClients().size();
+        } else if (mRouter != null) {
+            count = mRouter.getClients().size();
+        }
+
+        return count;
+    }
+
     public boolean isMaster() {
         return mServer != null;
     }

@@ -2,6 +2,7 @@ package com.urd.triple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,13 @@ public class PlayerListAdapter extends BaseAdapter {
         Player player = mPlayers.get(position);
         String name = player.name;
         if (GameCore.getInstance().getSelf() == player) {
-            name += " [*]";
+            int count = GameCore.getInstance().getClientCount() - 1;
+
+            String countStr = "*";
+            if (count > 0) {
+                countStr = String.valueOf(count);
+            }
+            name += String.format(Locale.US, " [%s]", countStr);
         }
         ((TextView) convertView).setText(name);
 
